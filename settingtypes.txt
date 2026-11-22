@@ -1,0 +1,33 @@
+[Mineclonia Armor HUD]
+
+# Horizontal anchor for the armor HUD. The group of equipped armor pieces is
+# laid out from this edge or from the screen centre.
+# left:   start at the left edge, growing right
+# center: centre the group on the screen
+# right:  start at the right edge, growing left
+mcl_armor_hud_anchor (Horizontal anchor) enum left left,center,right
+
+# Distance in pixels from the anchored screen edge. For the left and centre
+# anchors this moves right; for the right anchor it moves left.
+mcl_armor_hud_offset_x (Horizontal offset) int 8 0 1024
+
+# Distance in pixels from the bottom of the screen.
+mcl_armor_hud_offset_y (Vertical offset) int 8 0 1024
+
+# Scale of the 16x16 armor item icons. 1.0 draws each icon at 16x16 pixels.
+mcl_armor_hud_icon_scale (Icon scale) float 1.0 0.25 4.0
+
+# Space in pixels between adjacent armor icons.
+mcl_armor_hud_icon_spacing (Icon spacing) int 4 0 64
+
+# Durability percentage at or below which a piece is shown as a warning.
+mcl_armor_hud_warning_threshold (Warning threshold, %) int 25 0 100
+
+# Durability percentage at or below which a piece blinks and is shown as
+# critical. This is clamped to the warning threshold if it is larger.
+mcl_armor_hud_critical_threshold (Critical threshold, %) int 10 0 100
+
+# Interval in milliseconds between visibility changes of the critical-
+# durability blink. A value of 500 makes the icon and bar switch between
+# visible and hidden every 500 ms (a full on/off cycle takes 1000 ms).
+mcl_armor_hud_blink_interval (Blink interval, ms) int 500 100 10000
