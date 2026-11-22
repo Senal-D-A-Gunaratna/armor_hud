@@ -1,5 +1,7 @@
 # Mineclonia Armor HUD
 
+> Status: Work in progress (WIP). The implementation is committed for review/testing; some runtime and packaging work remains.
+
 A lightweight, server-side armor HUD for [Mineclonia](https://github.com/mineclonia/mineclonia).
 It shows the armor a player is actually wearing, using the item textures that
 Mineclonia and armor-providing mods have already registered.
