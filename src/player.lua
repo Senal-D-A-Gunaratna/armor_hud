@@ -31,11 +31,9 @@ local function get_state(player)
 			player = player,
 			elements = {},
 			by_slot = {},
-			snapshot = {},
 			has_critical = false,
 			blink_on = true,
 			last_blink = core.get_gametime(),
-			last_update = 0,
 			dirty = true,
 		}
 		states[name] = state
@@ -76,7 +74,6 @@ local function layout(piece_count)
 		pos_x = pos_x,
 		start_x = start_x,
 		step = icon_px + spacing,
-		icon_px = icon_px,
 		bar_width = bar_width,
 		bar_height = bar_height,
 		bar_y = -settings.offset_y,
@@ -84,7 +81,7 @@ local function layout(piece_count)
 	}
 end
 
-local function mark_critical_dirty(player, state, now)
+local function update_blink(player, state, now)
 	if state.has_critical and now - state.last_blink >= settings.blink_interval / 1000 then
 		state.blink_on = not state.blink_on
 		state.last_blink = now
@@ -160,17 +157,12 @@ local function refresh(player, state)
 			hud.update_piece(player, rec, p)
 		end
 
-		by_slot[piece.slot] = {
-			critical = critical,
-			durability = d,
-		}
+		by_slot[piece.slot] = { critical = critical }
 	end
 
 	local was_critical = state.has_critical
 	state.has_critical = any_critical
 	state.by_slot = by_slot
-	state.snapshot = pieces
-	state.last_update = now
 
 	-- Start each critical phase visible and restart the timer when critical
 	-- damage first appears. When nothing is critical, keep every piece shown.
@@ -178,8 +170,9 @@ local function refresh(player, state)
 		state.blink_on = true
 		state.last_blink = now
 		for slot, info in pairs(by_slot) do
-			if info.critical then
-				hud.set_visible(player, state.elements[slot], true)
+			local rec = state.elements[slot]
+			if info.critical and rec then
+				hud.set_visible(player, rec, true)
 			end
 		end
 	elseif not any_critical then
@@ -221,7 +214,7 @@ local function on_globalstep(dtime)
 				refresh(player, state)
 			end
 
-			mark_critical_dirty(player, state, now)
+			update_blink(player, state, now)
 		end
 	end
 end

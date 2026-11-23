@@ -13,7 +13,7 @@ M.slot_order = { "head", "torso", "legs", "feet" }
 -- "inventory_image" metadata overrides the registered item definition. This is
 -- how Mineclonia exposes leather dyeing, armor trims and other per-stack
 -- appearances.
-local function resolve_texture(stack, def)
+local function resolve_texture(stack, def, itemname)
 	local meta = stack:get_meta()
 	local image = meta:get_string("inventory_image")
 
@@ -26,7 +26,7 @@ local function resolve_texture(stack, def)
 
 	-- A trimmed item's metadata image may have been created before it was
 	-- enchanted. Add the glint if the metadata override does not contain it.
-	if mcl_enchanting and mcl_enchanting.is_enchanted(stack:get_name()) then
+	if mcl_enchanting and mcl_enchanting.is_enchanted(itemname) then
 		local overlay = mcl_enchanting.overlay
 		if overlay and image:find(overlay, 1, true) == nil then
 			image = image .. overlay
@@ -67,13 +67,18 @@ function M.read(player)
 			local stack = inv:get_stack("armor", element.index)
 			if not stack:is_empty() then
 				local itemname = stack:get_name()
+				-- Mirror Mineclonia's own armor code by resolving item aliases
+				-- before looking up the definition.
+				if core.registered_aliases and core.registered_aliases[itemname] then
+					itemname = core.registered_aliases[itemname]
+				end
 				local def = core.registered_items[itemname]
 				if def then
 					pieces[#pieces + 1] = {
 						slot = slot,
 						index = element.index,
 						itemname = itemname,
-						texture = resolve_texture(stack, def),
+						texture = resolve_texture(stack, def, itemname),
 						durability = durability.get(stack),
 					}
 				end

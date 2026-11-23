@@ -1,7 +1,5 @@
 # Mineclonia Armor HUD
 
-> Status: Work in progress (WIP). The implementation is committed for review/testing; some runtime and packaging work remains.
-
 A lightweight, server-side armor HUD for [Mineclonia](https://github.com/mineclonia/mineclonia).
 It shows the armor a player is actually wearing, using the item textures that
 Mineclonia and armor-providing mods have already registered.
@@ -20,8 +18,8 @@ generic 3D Armor compatibility layer.
   thresholds.
 - When a piece becomes critical, its icon and bar blink together. Other pieces
   keep their normal appearance.
-- Independent state for every player: HUD element IDs, snapshots, durability,
-  blink phase and update timestamps are all per player.
+- Independent state for every player: HUD element IDs, durability and blink
+  phase are all per player.
 - Event-driven refresh on armor inventory changes, with a 0.5 s polling
   fallback for durability loss that happens without inventory interaction.
 - HUD updates are diffed; `hud_change` is only called when a displayed value
@@ -29,7 +27,7 @@ generic 3D Armor compatibility layer.
 
 ## Requirements
 
-- Luanti 5.10 or later (the version required by the tested Mineclonia release).
+- Luanti 5.10 or later (the version required by the target Mineclonia release).
 - Mineclonia with the `mcl_armor`, `mcl_util` and `mcl_enchanting` mods.
 - No additional libraries or external dependencies.
 
@@ -86,8 +84,9 @@ Validation rules:
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The group is left-aligned,
-centered or right-aligned according to the anchor, and positive horizontal
-offsets always move the group inward from its anchored edge.
+centered or right-aligned according to the anchor. Positive horizontal offsets
+move the group right for the `left` and `center` anchors and left for the
+`right` anchor.
 
 ## How it works
 
@@ -117,11 +116,12 @@ the engine's inventory action callback and the durability fallback poll.
 
 ## Supported Mineclonia version
 
-Tested source-compatibility target: Mineclonia release **39603** (the release
-shipped with the local `game.conf` used during development), on Luanti 5.17.0.
-The armor API used here is not marked as unstable in `mcl_armor/API.md`, but
-Mineclonia does not guarantee that undocumented internals remain unchanged.
-Re-check the source if you use a very different Mineclonia release.
+Source-compatibility target: Mineclonia release **39603**, on Luanti 5.17.0.
+The mod loaded without Lua errors in a headless Luanti server running that
+release. The armor API used here is not marked as unstable in
+`mcl_armor/API.md`, but Mineclonia does not guarantee that undocumented
+internals remain unchanged. Re-check the source if you use a very different
+Mineclonia release.
 
 ## Known limitations
 
@@ -144,11 +144,19 @@ Static syntax check:
 find . -name '*.lua' -print0 | xargs -0 -n1 luac -p
 ```
 
-Simulated test harness: a standalone Lua harness stubs `core`, `mcl_armor`,
-`mcl_util` and `mcl_enchanting`, loads the modules from `src/`, and simulates
-player joins, armor changes, durability loss, critical blinking, multiple
-players, disconnects, death/respawn and third-party armor. It checks the
-generated HUD calls and per-player state isolation without starting a server.
+The standalone test harness stubs `core`, `mcl_armor`, `mcl_util` and
+`mcl_enchanting`, loads the modules from `src/`, and simulates player joins,
+armor changes, aliases, durability loss, warning/critical thresholds, critical
+blinking, multiple players, disconnects, death/respawn and third-party armor.
+It checks the generated HUD calls and per-player state isolation without
+starting a server:
+
+```sh
+luajit tests/simulate.lua
+```
+
+A successful run ends with `ALL SIMULATED TESTS PASSED`. The harness is for
+development only and is not loaded by Luanti.
 
 Headless load test:
 
@@ -156,9 +164,10 @@ Headless load test:
 luanti --server --world /path/to/test-world --gameid mineclonia
 ```
 
-Check `debug.txt` for Lua errors after the world starts. A real multiplayer
-client test is still recommended before publishing, especially for visual
-positioning and blink timing.
+The mod loaded without Lua errors in a headless Luanti 5.17.0 server using
+Mineclonia release 39603. A live graphical client test has not been performed;
+visual placement and blink timing should still be checked in-game before
+publishing to a wide audience.
 
 ## License
 

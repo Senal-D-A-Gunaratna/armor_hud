@@ -19,7 +19,7 @@ function M.get(stack)
 	end
 
 	local wear = stack:get_wear()
-	local remaining_wear = math.max(0, WEAR_SCALE - wear)
+	local remaining_wear = math.max(0, math.min(WEAR_SCALE, WEAR_SCALE - wear))
 	local fraction = remaining_wear / WEAR_SCALE
 
 	return {
