@@ -50,12 +50,12 @@ end
 
 ---Create or update one armor piece's HUD elements.
 ---p fields:
----  pos_x, x, icon_y, icon_scale, icon_text,
----  has_bar, bar_y, bar_width, bar_height, fill_px, bar_color, visible
+---  pos_x, x, icon_y, icon_scale, icon_text, icon_visible,
+---  has_bar, bar_y, bar_width, bar_height, fill_px, bar_color
 function H.update_piece(player, rec, p)
-	local icon_text = p.visible and p.icon_text or ""
-	local bar_bg_text = (p.visible and p.has_bar) and BAR_BACKGROUND or ""
-	local fill_shown = p.visible and p.has_bar and p.fill_px > 0
+	local icon_text = p.icon_visible and p.icon_text or ""
+	local bar_bg_text = p.has_bar and BAR_BACKGROUND or ""
+	local fill_shown = p.has_bar and p.fill_px > 0
 	local fill_text = fill_shown and bar_texture(p.bar_color) or ""
 
 	if not rec.icon_id then
@@ -103,12 +103,12 @@ function H.update_piece(player, rec, p)
 	rec.params = p
 end
 
-function H.set_visible(player, rec, visible)
+function H.set_icon_visible(player, rec, visible)
 	local p = rec.params
-	if not p or p.visible == visible then
+	if not p or p.icon_visible == visible then
 		return
 	end
-	p.visible = visible
+	p.icon_visible = visible
 	H.update_piece(player, rec, p)
 end
 

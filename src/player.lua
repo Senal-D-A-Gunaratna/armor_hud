@@ -90,7 +90,7 @@ local function update_blink(player, state, now)
 			if info.critical then
 				local rec = state.elements[slot]
 				if rec then
-					hud.set_visible(player, rec, state.blink_on)
+					hud.set_icon_visible(player, rec, state.blink_on)
 				end
 			end
 		end
@@ -145,7 +145,7 @@ local function refresh(player, state)
 			bar_height = l.bar_height,
 			fill_px = fill_px,
 			bar_color = color,
-			visible = (not critical) or state.blink_on,
+			icon_visible = (not critical) or state.blink_on,
 		}
 
 		local rec = state.elements[piece.slot]
@@ -164,15 +164,16 @@ local function refresh(player, state)
 	state.has_critical = any_critical
 	state.by_slot = by_slot
 
-	-- Start each critical phase visible and restart the timer when critical
-	-- damage first appears. When nothing is critical, keep every piece shown.
+	-- Start each critical blink phase with the icon visible and restart the
+	-- timer when critical damage first appears. When nothing is critical, keep
+	-- every icon shown.
 	if any_critical and not was_critical then
 		state.blink_on = true
 		state.last_blink = now
 		for slot, info in pairs(by_slot) do
 			local rec = state.elements[slot]
 			if info.critical and rec then
-				hud.set_visible(player, rec, true)
+				hud.set_icon_visible(player, rec, true)
 			end
 		end
 	elseif not any_critical then

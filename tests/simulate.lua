@@ -399,18 +399,24 @@ advance(0.02)
 assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical visible initially")
 advance(0.51)
 assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png", "non-critical unaffected")
-assert_eq(icons(p)[2].e.text, "", "critical hidden on blink")
-local hidden = 0
+assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
+local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if e.offset.x == 28 and (e.z_index == 10 or e.z_index == 11) then
-		assert_eq(e.text, "", "critical bar hidden")
-		hidden = hidden + 1
+	if e.offset.x == 28 and e.z_index == 10 then
+		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#1b1b1b",
+			"critical bar background stays visible")
+		visible_bars = visible_bars + 1
+	elseif e.offset.x == 28 and e.z_index == 11 then
+		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#d9363e",
+			"critical bar fill stays visible")
+		assert_eq(e.scale.x, 2, "critical bar fill keeps its width")
+		visible_bars = visible_bars + 1
 	end
 end
-assert_eq(hidden, 2, "both critical bar elements hidden")
+assert_eq(visible_bars, 2, "both critical bar elements stay visible")
 advance(0.51)
-assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical restored")
-print("ok critical blink")
+assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical icon restored")
+print("ok critical icon blink without hiding the bar")
 
 -- Multiplayer isolation.
 local q = join("bob")

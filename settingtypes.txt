@@ -23,11 +23,12 @@ mcl_armor_hud_icon_spacing (Icon spacing) int 4 0 64
 # Durability percentage at or below which a piece is shown as a warning.
 mcl_armor_hud_warning_threshold (Warning threshold, %) int 25 0 100
 
-# Durability percentage at or below which a piece blinks and is shown as
-# critical. This is clamped to the warning threshold if it is larger.
+# Durability percentage at or below which a piece's icon blinks and its bar
+# is shown as critical. This is clamped to the warning threshold if larger.
 mcl_armor_hud_critical_threshold (Critical threshold, %) int 10 0 100
 
-# Interval in milliseconds between visibility changes of the critical-
-# durability blink. A value of 500 makes the icon and bar switch between
-# visible and hidden every 500 ms (a full on/off cycle takes 1000 ms).
+# Interval in milliseconds between visibility changes of the critical icon
+# blink. A value of 500 makes the icon switch between visible and hidden
+# every 500 ms (a full on/off cycle takes 1000 ms). The durability bar stays
+# visible at all times.
 mcl_armor_hud_blink_interval (Blink interval, ms) int 500 100 10000

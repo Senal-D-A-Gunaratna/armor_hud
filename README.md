@@ -16,8 +16,8 @@ generic 3D Armor compatibility layer.
 - Shows a small durability bar under every damageable armor piece.
 - Green/yellow/red durability states with configurable warning and critical
   thresholds.
-- When a piece becomes critical, its icon and bar blink together. Other pieces
-  keep their normal appearance.
+- When a piece becomes critical, its icon blinks while its durability bar
+  stays visible. Other pieces keep their normal appearance.
 - Independent state for every player: HUD element IDs, durability and blink
   phase are all per player.
 - Event-driven refresh on armor inventory changes, with a 0.5 s polling
@@ -72,8 +72,8 @@ the mod; users should not need to edit Lua source.
 | `mcl_armor_hud_icon_scale` | `1.0` | Scale of the 16x16 armor icons (1.0 = 16x16 px). |
 | `mcl_armor_hud_icon_spacing` | `4` | Pixels between adjacent icons. |
 | `mcl_armor_hud_warning_threshold` | `25` | Percentage at or below which the bar turns yellow. |
-| `mcl_armor_hud_critical_threshold` | `10` | Percentage at or below which the piece blinks and the bar turns red. |
-| `mcl_armor_hud_blink_interval` | `500` | Milliseconds between visibility flips (a full cycle is twice this). |
+| `mcl_armor_hud_critical_threshold` | `10` | Percentage at or below which the icon blinks and the bar turns red. |
+| `mcl_armor_hud_blink_interval` | `500` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 Validation rules:
 
@@ -106,7 +106,7 @@ lifecycle handling:
 
 - join: create state and refresh;
 - armor inventory action: mark dirty and refresh on the next server step;
-- global step: poll every 0.5 s, animate critical pieces;
+- global step: poll every 0.5 s, blink critical icons;
 - leave: remove all elements and drop the state;
 - death: clear the HUD immediately and refresh after death drops;
 - respawn: refresh again.
