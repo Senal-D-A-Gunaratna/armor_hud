@@ -48,11 +48,14 @@ end
 local function layout(piece_count)
 	local anchor = settings.anchor
 	local icon_px = 16 * settings.icon_scale
+	-- mcl_offhand draws a 48 px item in a 60 px cell; keep that proportion.
+	local cell_px = icon_px / 0.8
+	local inset = (cell_px - icon_px) / 2
 	local spacing = settings.icon_spacing
 
 	local group_width = 0
 	if piece_count > 0 then
-		group_width = piece_count * icon_px + (piece_count - 1) * spacing
+		group_width = piece_count * cell_px + (piece_count - 1) * spacing
 	end
 
 	local pos_x, start_x
@@ -67,18 +70,20 @@ local function layout(piece_count)
 		start_x = settings.offset_x
 	end
 
-	local bar_width = math.max(1, math.floor(icon_px + 0.5))
-	local bar_height = math.max(2, math.floor(icon_px / 8 + 0.5))
-	local gap = math.max(1, math.floor(icon_px / 16 + 0.5))
+	local bar_width = math.max(1, math.floor(cell_px * 2 / 3 + 0.5))
+	local bar_height = math.max(2, math.floor(cell_px / 20 + 0.5))
 
 	return {
 		pos_x = pos_x,
 		start_x = start_x,
-		step = icon_px + spacing,
+		step = cell_px + spacing,
+		cell_px = cell_px,
+		inset = inset,
 		bar_width = bar_width,
 		bar_height = bar_height,
-		bar_y = -settings.offset_y,
-		icon_y = -(settings.offset_y + bar_height + gap),
+		cell_y = -settings.offset_y,
+		icon_y = -(settings.offset_y + inset),
+		bar_y = -(settings.offset_y + inset + bar_height),
 	}
 end
 
@@ -137,6 +142,9 @@ local function refresh(player, state)
 		local p = {
 			pos_x = l.pos_x,
 			x = l.start_x + (i - 1) * l.step,
+			cell_y = l.cell_y,
+			cell_px = l.cell_px,
+			inset = l.inset,
 			icon_y = l.icon_y,
 			icon_scale = settings.icon_scale,
 			icon_text = piece.texture,
