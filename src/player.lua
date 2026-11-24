@@ -13,7 +13,7 @@ local poll_elapsed = 0
 -- center is 19 px below the cell center (slot offset -32, bar offset -13).
 local OFFHAND_CELL_PX = 60
 local OFFHAND_SLOT_X = -550
-local OFFHAND_SLOT_Y = -32
+local ARMOR_HUD_BOTTOM_GAP = 0
 local OFFHAND_SLOT_GAP = 4
 local OFFHAND_SHIFT_X = OFFHAND_CELL_PX + OFFHAND_SLOT_GAP
 local OFFHAND_TEXTURE_PX = 128
@@ -89,7 +89,7 @@ local function layout(piece_count, offhand_visible)
 		if offhand_visible then
 			start_x = start_x - OFFHAND_SHIFT_X
 		end
-		cell_y = OFFHAND_SLOT_Y + cell_px / 2
+		cell_y = -ARMOR_HUD_BOTTOM_GAP
 	else
 		pos_x = 0
 		start_x = settings.offset_x
