@@ -3,6 +3,7 @@ local M = {}
 local VALUES = {
 	offset_x = 8,
 	offset_y = 8,
+	icon_scale = 3.0,
 	icon_spacing = 4,
 	critical_threshold = 10,
 	poll_interval = 0.5,
@@ -10,7 +11,6 @@ local VALUES = {
 
 local DEFAULTS = {
 	anchor = "left",
-	icon_scale = 2.0,
 	blink_interval = 200,
 }
 
@@ -36,9 +36,6 @@ end
 function M.load()
 	local s = {
 		anchor = (core.settings:get("mcl_armor_hud_anchor") or "left"):lower(),
-
-		icon_scale = number_setting("mcl_armor_hud_icon_scale",
-			DEFAULTS.icon_scale, 0.25, 4.0),
 
 		-- This is the time between two visibility flips, not the full cycle.
 		blink_interval = integer_setting("mcl_armor_hud_blink_interval",
