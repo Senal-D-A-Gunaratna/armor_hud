@@ -70,7 +70,7 @@ editable values in `src/settings.lua`, not by user settings.
 | `mcl_armor_hud_anchor` | `left` | Horizontal anchor: `left`, `center` or `right`. |
 | `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `mcl_armor_hud_offset_y` | `8` | Pixels above the bottom of the screen. |
-| `mcl_armor_hud_icon_scale` | `1.0` | Scale of the 16x16 armor icons (1.0 = 16x16 px). |
+| `mcl_armor_hud_icon_scale` | `2.0` | Scale of the armor icons and bars (1.0 = 16x16 px icons). |
 | `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source

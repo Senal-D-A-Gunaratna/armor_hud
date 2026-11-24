@@ -83,7 +83,7 @@ Only three user settings (`settingtypes.txt`, read in `src/settings.lua`):
 | Setting | Default | Range |
 |---|---:|---|
 | `mcl_armor_hud_anchor` | `left` | `left`, `center`, `right` |
-| `mcl_armor_hud_icon_scale` | `1.0` | 0.25–4.0 |
+| `mcl_armor_hud_icon_scale` | `2.0` | 0.25–4.0 |
 | `mcl_armor_hud_blink_interval` | `200` ms | 100–10000 |
 
 Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
@@ -132,8 +132,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the blink interval change:
-  `9dbb862`, clean tree.
+  commit unless asked. Current HEAD before the icon scale change:
+  `7f6b3de`, clean tree.
 - History note: an inventory-cell redesign was committed once and then
   discarded by an external `git reset` to `bfa374f`; the current code is the
   simple icon + durability-bar design. Do not assume those cell commits exist.
