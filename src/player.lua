@@ -12,7 +12,7 @@ local poll_elapsed = 0
 -- Geometry used by mcl_offhand: 60 px cell, 48 px item, 40x3 bar. Its bar
 -- center is 19 px below the cell center (slot offset -32, bar offset -13).
 local OFFHAND_CELL_PX = 60
-local OFFHAND_SLOT_X = -320
+local OFFHAND_SLOT_X = -550
 local OFFHAND_SLOT_Y = -32
 local OFFHAND_SLOT_GAP = 4
 local OFFHAND_SHIFT_X = OFFHAND_CELL_PX + OFFHAND_SLOT_GAP
@@ -102,8 +102,7 @@ local function layout(piece_count, offhand_visible)
 	local offhand_scale = cell_px / OFFHAND_CELL_PX
 	local bar_width = math.max(1, math.floor(OFFHAND_BAR_W * offhand_scale + 0.5))
 	local bar_height = math.max(1, math.floor(OFFHAND_BAR_H * offhand_scale + 0.5))
-	local bar_center_from_cell_bottom = cell_px / 2 -
-		OFFHAND_BAR_CENTER_DY * offhand_scale
+	local bar_center_from_cell_bottom = cell_px / 2 - OFFHAND_BAR_CENTER_DY * offhand_scale
 
 	return {
 		pos_x = pos_x,
@@ -290,8 +289,14 @@ local function register_events()
 		if not info then
 			return
 		end
-		if info.from_list == "armor" or info.to_list == "armor" or info.listname == "armor" or
-			info.from_list == "offhand" or info.to_list == "offhand" or info.listname == "offhand" then
+		if
+			info.from_list == "armor"
+			or info.to_list == "armor"
+			or info.listname == "armor"
+			or info.from_list == "offhand"
+			or info.to_list == "offhand"
+			or info.listname == "offhand"
+		then
 			local state = states[player:get_player_name()]
 			if state then
 				state.dirty = true
