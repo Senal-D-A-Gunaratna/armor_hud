@@ -108,7 +108,7 @@ scaled from the `mcl_offhand` 48 px item / 60 px cell ratio), `inset = (cell_px 
 `bar_height = round(3 * cell_px/60)`, `bar_x = x + (cell_px - bar_width)/2`,
 `cell_y = -offset_y`, `icon_y = -(offset_y + inset)`,
 `bar_center_from_cell_bottom = cell_px/2 - 19 * cell_px/60`,
-`bar_y = -(offset_y + bar_center_from_cell_bottom + bar_height/2)`. The bar
+`bar_y = -(offset_y + bar_center_from_cell_bottom - bar_height/2)`. The bar
 overlays the lower part of the item, as in `mcl_offhand`.
 Right anchor: positive `offset_x` moves left; center/left: positive moves
 right. Edit `README.md` if this table changes.
@@ -148,8 +148,8 @@ right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the offhand bar geometry change:
-  `3782f26`, clean tree.
+  commit unless asked. Current HEAD before the bar bottom-edge fix:
+  `303703b`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.
