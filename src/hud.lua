@@ -1,8 +1,8 @@
 local H = {}
 
--- A single white pixel is shipped with the mod and recolored with texture
--- modifiers. This avoids shipping or copying any armor textures.
-local PIXEL = "mcl_armor_hud_pixel.png"
+-- Mineclonia's own 1x1 white wear-bar pixel, recolored with texture modifiers.
+-- Referencing it at runtime avoids shipping or copying any media.
+local PIXEL = "mcl_wear_bar.png"
 local BAR_BACKGROUND = PIXEL .. "^[colorize:#1b1b1b"
 
 local Z_BAR_BG = 10
