@@ -11,10 +11,11 @@ source before relying on any statement here.
 Server-side Luanti/Mineclonia mod: shows equipped armor icons with durability
 bars and blinking at critical durability. No formspec, chat command or items.
 Target: Mineclonia release `39603`, Luanti 5.17.0 (Luanti >= 5.10 required).
-License: MIT; only a generated 1x1 white pixel texture is shipped. Mineclonia
-textures are referenced by name at runtime, never copied.
+License: MIT; the mod ships no media. All textures, including the 1x1 white
+bar pixel (`mcl_wear_bar.png`), are referenced from Mineclonia at runtime.
 
-Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`.
+Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
+`mcl_offhand`.
 
 ## File map
 
@@ -31,7 +32,6 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`.
 - `src/hud.lua`: image HUD elements, diffed updates, visibility toggles.
 - `src/player.lua`: per-player state, layout, blink, lifecycle, polling.
 - `tests/simulate.lua`: standalone LuaJIT simulation harness.
-- `textures/mcl_armor_hud_pixel.png`: 1x1 white RGBA pixel for bars.
 - `README.md`, `settingtypes.txt`, `mod.conf`: user-facing docs/metadata.
 - `mcl_armor_hud.zip` (in parent `mods/` dir): release archive, rebuild after
   every change.
@@ -63,7 +63,9 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`.
   min(floor(wear / 65535 * 600) + 10, 511)`; if `wear_i <= 255` color is
   `(wear_i, 255, 0)` (green→yellow), else `(255, 511 - wear_i, 0)`
   (yellow→red). This matches Luanti's `drawItemStack.cpp` and Mineclonia's
-  `mcl_offhand/init.lua`. Bar background `#1b1b1b`; fill width =
+  `mcl_offhand/init.lua`. Both bar elements use Mineclonia's
+  `mcl_wear_bar.png` (1x1 white pixel) as their base texture. Bar background
+  `#1b1b1b`; fill width =
   `round(bar_width * fraction)`.
 - Critical blink (`src/player.lua:84`): time between visibility *flips* is
   `blink_interval` ms (full cycle = 2x). Only the icon is hidden; both bar
@@ -132,8 +134,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the icon scale change:
-  `7f6b3de`, clean tree.
+  commit unless asked. Current HEAD before the no-media change:
+  `b51719c`, clean tree.
 - History note: an inventory-cell redesign was committed once and then
   discarded by an external `git reset` to `bfa374f`; the current code is the
   simple icon + durability-bar design. Do not assume those cell commits exist.

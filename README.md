@@ -14,9 +14,9 @@ generic 3D Armor compatibility layer.
 - Uses the equipped `ItemStack`'s inventory image, so leather dyeing, armor
   trims, enchantment glints and third-party armor textures are preserved.
 - Shows a small durability bar under every damageable armor piece.
-- The bar uses Mineclonia's own wear-bar color gradient (green to yellow to
-  red), matching the durability bars of items in inventories and the offhand
-  HUD.
+- The bar uses Mineclonia's own `mcl_wear_bar.png` texture and wear-bar color
+  gradient (green to yellow to red), matching the durability bars of items in
+  inventories and the offhand HUD.
 - When a piece becomes critical, its icon blinks while its durability bar
   stays visible. Other pieces keep their normal appearance.
 - Independent state for every player: HUD element IDs, durability and blink
@@ -29,7 +29,8 @@ generic 3D Armor compatibility layer.
 ## Requirements
 
 - Luanti 5.10 or later (the version required by the target Mineclonia release).
-- Mineclonia with the `mcl_armor`, `mcl_util` and `mcl_enchanting` mods.
+- Mineclonia with the `mcl_armor`, `mcl_util`, `mcl_enchanting` and
+  `mcl_offhand` mods (all part of the game).
 - No additional libraries or external dependencies.
 
 The implementation was researched against Mineclonia `game.conf` release
@@ -56,8 +57,8 @@ The implementation was researched against Mineclonia `game.conf` release
 3. Start the world. The mod has no formspec, chat command or item; it works
    automatically for every player.
 
-The mod depends on `mcl_armor`, `mcl_util` and `mcl_enchanting`, so it will not
-enable in a game where those are unavailable.
+The mod depends on `mcl_armor`, `mcl_util`, `mcl_enchanting` and
+`mcl_offhand`, so it will not enable in a game where those are unavailable.
 
 ## Configuration
 
@@ -188,8 +189,8 @@ publishing to a wide audience.
 
 ## License
 
-The mod's source code and its single generated 1x1 white pixel texture are
-released under the MIT License. See `LICENSE`.
+The mod's source code is released under the MIT License. See `LICENSE`. The
+mod ships no textures or other media.
 
 This mod does **not** copy or redistribute Mineclonia's armor textures, code
 or other media. It references textures registered by Mineclonia and other mods
