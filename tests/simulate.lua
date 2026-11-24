@@ -263,7 +263,6 @@ local function near(a, b) return math.abs(a - b) < 0.001 end
 local function defaults()
 	return {
 		mcl_armor_hud_anchor = "left",
-		mcl_armor_hud_icon_scale = "2.0",
 		mcl_armor_hud_blink_interval = "200",
 	}
 end
@@ -282,11 +281,10 @@ end
 -- Settings validation.
 settings_values = defaults()
 settings_values.mcl_armor_hud_anchor = " side "
-settings_values.mcl_armor_hud_icon_scale = "99"
 settings_values.mcl_armor_hud_blink_interval = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "left", "invalid anchor fallback")
-assert_eq(s.icon_scale, 4, "icon scale clamped")
+assert_eq(s.icon_scale, 3, "offhand-sized icon scale from source")
 assert_eq(s.blink_interval, 200, "blink fallback")
 assert_eq(s.offset_x, 8, "source-defined horizontal offset")
 assert_eq(s.offset_y, 8, "source-defined vertical offset")
@@ -314,17 +312,17 @@ for _, e in pairs(p.hud) do if e.z_index == 9 then cell = e end end
 assert_eq(cell.text, "mcl_offhand_slot.png", "Mineclonia inventory cell texture")
 assert_eq(cell.offset.x, 8, "cell left offset")
 assert_eq(cell.offset.y, -8, "cell bottom offset")
-assert_true(near(cell.scale.x, 40 / 22), "cell scaled to 40 px")
+assert_true(near(cell.scale.x, 60 / 22), "cell scaled to 60 px")
 local ic = icons(p)[1]
 assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png", "icon texture")
-assert_eq(ic.e.offset.x, 12, "item centered in cell")
-assert_eq(ic.e.offset.y, -12, "item bottom inside cell")
+assert_eq(ic.e.offset.x, 14, "item centered in cell")
+assert_eq(ic.e.offset.y, -14, "item bottom inside cell")
 assert_eq(ic.e.position.x, 0, "left anchor position")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
-assert_true(near(b[1].e.offset.x, 14.5), "bar centered in cell")
-assert_eq(b[1].e.offset.y, -14, "bar inside cell bottom")
-assert_eq(b[2].e.scale.x, 27, "full bar fill")
+assert_true(near(b[1].e.offset.x, 18), "bar centered in cell")
+assert_eq(b[1].e.offset.y, -17, "bar inside cell bottom")
+assert_eq(b[2].e.scale.x, 40, "full bar fill")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
 
@@ -336,10 +334,10 @@ advance(0.02)
 assert_eq(count_hud(p), 16, "four pieces have sixteen elements")
 local is = icons(p)
 assert_eq(#is, 4, "four icons")
-assert_eq(is[1].e.offset.x, 12, "head x")
-assert_eq(is[2].e.offset.x, 56, "torso x")
-assert_eq(is[3].e.offset.x, 100, "legs x")
-assert_eq(is[4].e.offset.x, 144, "feet x")
+assert_eq(is[1].e.offset.x, 14, "head x")
+assert_eq(is[2].e.offset.x, 78, "torso x")
+assert_eq(is[3].e.offset.x, 142, "legs x")
+assert_eq(is[4].e.offset.x, 206, "feet x")
 assert_eq(is[1].e.text, "mcl_armor_inv_helmet_iron.png", "head texture")
 assert_eq(is[4].e.text, "mcl_armor_inv_boots_iron.png", "feet texture")
 print("ok all four pieces")
@@ -351,7 +349,7 @@ advance(0.02)
 assert_eq(count_hud(p), 8, "two remaining pieces")
 is = icons(p)
 assert_eq(#is, 2, "two icons after removals")
-assert_eq(is[1].e.offset.x, 12, "first remaining icon reflows")
+assert_eq(is[1].e.offset.x, 14, "first remaining icon reflows")
 assert_eq(is[1].e.text, "mcl_armor_inv_leggings_iron.png", "legs is first")
 unequip(p, "legs")
 unequip(p, "feet")
@@ -379,17 +377,17 @@ equip(p, "torso", "test:chest_iron", 0)
 advance(0.02)
 local fill_id
 for id, e in pairs(p.hud) do if e.z_index == 12 then fill_id = id end end
-assert_eq(p.hud[fill_id].scale.x, 27, "full torso bar")
+assert_eq(p.hud[fill_id].scale.x, 40, "full torso bar")
 set_wear(p, "torso", 32768)
 advance(0.6)
-assert_eq(p.hud[fill_id].scale.x, 14, "half torso bar after polling")
+assert_eq(p.hud[fill_id].scale.x, 20, "half torso bar after polling")
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ffc900",
 	"Mineclonia yellow wear color at half durability")
 set_wear(p, "torso", math.floor(65536 * 0.75))
 advance(0.6)
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ff3300",
 	"Mineclonia orange wear color")
-assert_eq(p.hud[fill_id].scale.x, 7, "quarter fill width")
+assert_eq(p.hud[fill_id].scale.x, 10, "quarter fill width")
 print("ok durability and wear-bar gradient")
 
 -- Critical blink.
@@ -402,14 +400,14 @@ assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png", "non-critical 
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if near(e.offset.x, 58.5) and e.z_index == 11 then
+	if near(e.offset.x, 82) and e.z_index == 11 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
-	elseif near(e.offset.x, 58.5) and e.z_index == 12 then
+	elseif near(e.offset.x, 82) and e.z_index == 12 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
-		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
+		assert_eq(e.scale.x, 4, "critical bar fill keeps its width")
 		visible_bars = visible_bars + 1
 	end
 end
@@ -428,12 +426,12 @@ equip(q, "feet", "test:feet_iron", 0)
 advance(0.02)
 advance(0.21)
 for _, e in pairs(p.hud) do
-	if e.z_index == 10 and e.offset.x == 56 then
+	if e.z_index == 10 and e.offset.x == 78 then
 		assert_eq(e.text, "", "alice critical hidden")
 	end
 end
 for _, e in pairs(q.hud) do
-	if e.z_index == 10 and e.offset.x == 56 then
+	if e.z_index == 10 and e.offset.x == 78 then
 		assert_eq(e.text, "mcl_armor_inv_chestplate_iron.png", "bob unaffected")
 	end
 end
@@ -526,10 +524,10 @@ equip(c, "torso", "test:chest_iron", 0)
 advance(0.02)
 is = icons(c)
 assert_eq(is[1].e.position.x, 0.5, "center position")
-assert_true(near(is[1].e.offset.x, -28), "center first x")
-assert_true(near(is[2].e.offset.x, 16), "center second x")
-assert_eq(is[1].e.offset.y, -24, "custom vertical offset")
-assert_eq(bar_elements(c)[1].e.offset.y, -26, "custom bar vertical offset")
+assert_true(near(is[1].e.offset.x, -46), "center first x")
+assert_true(near(is[2].e.offset.x, 18), "center second x")
+assert_eq(is[1].e.offset.y, -26, "custom vertical offset")
+assert_eq(bar_elements(c)[1].e.offset.y, -29, "custom bar vertical offset")
 print("ok center positioning")
 
 settings_values = defaults()
@@ -544,8 +542,8 @@ equip(rr, "torso", "test:chest_iron", 0)
 advance(0.02)
 is = icons(rr)
 assert_eq(is[1].e.position.x, 1, "right position")
-assert_true(near(is[1].e.offset.x, -90), "right first x")
-assert_true(near(is[2].e.offset.x, -46), "right second x")
+assert_true(near(is[1].e.offset.x, -128), "right first x")
+assert_true(near(is[2].e.offset.x, -64), "right second x")
 print("ok right positioning")
 
 print("\nALL SIMULATED TESTS PASSED")
