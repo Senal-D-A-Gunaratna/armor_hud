@@ -4,7 +4,6 @@ local VALUES = {
 	offset_x = 8,
 	offset_y = 8,
 	icon_spacing = 4,
-	warning_threshold = 25,
 	critical_threshold = 10,
 	poll_interval = 0.5,
 }
@@ -54,13 +53,6 @@ function M.load()
 		core.log("warning",
 			"[mcl_armor_hud] Invalid mcl_armor_hud_anchor; using \"left\"")
 		s.anchor = DEFAULTS.anchor
-	end
-
-	if s.critical_threshold > s.warning_threshold then
-		core.log("warning",
-			"[mcl_armor_hud] Critical threshold is above the warning threshold; " ..
-			"clamping it to the warning threshold")
-		s.critical_threshold = s.warning_threshold
 	end
 
 	return s
