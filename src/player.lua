@@ -15,6 +15,7 @@ local OFFHAND_CELL_PX = 60
 local OFFHAND_SLOT_X = -320
 local OFFHAND_SLOT_Y = -32
 local OFFHAND_SLOT_GAP = 4
+local OFFHAND_SHIFT_X = OFFHAND_CELL_PX + OFFHAND_SLOT_GAP
 local OFFHAND_TEXTURE_PX = 128
 local OFFHAND_BAR_W = 40
 local OFFHAND_BAR_H = 3
@@ -56,7 +57,13 @@ local function get_state(player)
 	return state
 end
 
-local function layout(piece_count)
+local function has_offhand(player)
+	local stack = player:get_inventory():get_stack("offhand", 1)
+	local name = stack:get_name()
+	return name ~= "" and core.registered_items[name] ~= nil
+end
+
+local function layout(piece_count, offhand_visible)
 	local anchor = settings.anchor
 	local icon_px = 16 * settings.icon_scale
 	-- mcl_offhand draws a 48 px item in a 60 px cell; keep that proportion.
@@ -79,6 +86,9 @@ local function layout(piece_count)
 	elseif anchor == "offhand" then
 		pos_x = 0.5
 		start_x = OFFHAND_SLOT_X + OFFHAND_CELL_PX / 2 + OFFHAND_SLOT_GAP
+		if offhand_visible then
+			start_x = start_x - OFFHAND_SHIFT_X
+		end
 		cell_y = OFFHAND_SLOT_Y + cell_px / 2
 	else
 		pos_x = 0
@@ -130,7 +140,7 @@ local function refresh(player, state)
 	local now = core.get_gametime()
 	local pieces = armor.read(player)
 	local count = #pieces
-	local l = layout(count)
+	local l = layout(count, has_offhand(player))
 
 	local present = {}
 	for _, piece in ipairs(pieces) do
@@ -280,7 +290,8 @@ local function register_events()
 		if not info then
 			return
 		end
-		if info.from_list == "armor" or info.to_list == "armor" or info.listname == "armor" then
+		if info.from_list == "armor" or info.to_list == "armor" or info.listname == "armor" or
+			info.from_list == "offhand" or info.to_list == "offhand" or info.listname == "offhand" then
 			local state = states[player:get_player_name()]
 			if state then
 				state.dirty = true
