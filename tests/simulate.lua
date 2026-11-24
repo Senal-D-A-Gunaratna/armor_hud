@@ -319,7 +319,7 @@ assert_eq(#b, 2, "bar elements")
 assert_eq(b[1].e.offset.x, 8, "bar x")
 assert_eq(b[1].e.offset.y, -8, "bar y")
 assert_eq(b[2].e.scale.x, 32, "full bar fill")
-assert_eq(b[2].e.text, "mcl_armor_hud_pixel.png^[colorize:#0aff00", "Mineclonia green wear color")
+assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
 
 -- All four pieces.
@@ -377,11 +377,11 @@ assert_eq(p.hud[fill_id].scale.x, 32, "full torso bar")
 set_wear(p, "torso", 32768)
 advance(0.6)
 assert_eq(p.hud[fill_id].scale.x, 16, "half torso bar after polling")
-assert_eq(p.hud[fill_id].text, "mcl_armor_hud_pixel.png^[colorize:#ffc900",
+assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ffc900",
 	"Mineclonia yellow wear color at half durability")
 set_wear(p, "torso", math.floor(65536 * 0.75))
 advance(0.6)
-assert_eq(p.hud[fill_id].text, "mcl_armor_hud_pixel.png^[colorize:#ff3300",
+assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ff3300",
 	"Mineclonia orange wear color")
 assert_eq(p.hud[fill_id].scale.x, 8, "quarter fill width")
 print("ok durability and wear-bar gradient")
@@ -397,11 +397,11 @@ assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
 	if e.offset.x == 44 and e.z_index == 10 then
-		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#1b1b1b",
+		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
 	elseif e.offset.x == 44 and e.z_index == 11 then
-		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#ff0000",
+		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
 		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
 		visible_bars = visible_bars + 1
