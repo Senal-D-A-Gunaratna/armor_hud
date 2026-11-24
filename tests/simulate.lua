@@ -291,7 +291,6 @@ assert_eq(s.blink_interval, 500, "blink fallback")
 assert_eq(s.offset_x, 8, "source-defined horizontal offset")
 assert_eq(s.offset_y, 8, "source-defined vertical offset")
 assert_eq(s.icon_spacing, 4, "source-defined spacing")
-assert_eq(s.warning_threshold, 25, "source-defined warning threshold")
 assert_eq(s.critical_threshold, 10, "source-defined critical threshold")
 assert_eq(s.poll_interval, 0.5, "source-defined poll interval")
 print("ok settings parsing")
@@ -320,7 +319,7 @@ assert_eq(#b, 2, "bar elements")
 assert_eq(b[1].e.offset.x, 8, "bar x")
 assert_eq(b[1].e.offset.y, -8, "bar y")
 assert_eq(b[2].e.scale.x, 16, "full bar fill")
-assert_eq(b[2].e.text, "mcl_armor_hud_pixel.png^[colorize:#55c14f", "normal color")
+assert_eq(b[2].e.text, "mcl_armor_hud_pixel.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
 
 -- All four pieces.
@@ -378,11 +377,14 @@ assert_eq(p.hud[fill_id].scale.x, 16, "full torso bar")
 set_wear(p, "torso", 32768)
 advance(0.6)
 assert_eq(p.hud[fill_id].scale.x, 8, "half torso bar after polling")
+assert_eq(p.hud[fill_id].text, "mcl_armor_hud_pixel.png^[colorize:#ffc900",
+	"Mineclonia yellow wear color at half durability")
 set_wear(p, "torso", math.floor(65536 * 0.75))
 advance(0.6)
-assert_eq(p.hud[fill_id].text, "mcl_armor_hud_pixel.png^[colorize:#e0b020", "warning color")
-assert_eq(p.hud[fill_id].scale.x, 4, "warning fill width")
-print("ok durability and warning")
+assert_eq(p.hud[fill_id].text, "mcl_armor_hud_pixel.png^[colorize:#ff3300",
+	"Mineclonia orange wear color")
+assert_eq(p.hud[fill_id].scale.x, 4, "quarter fill width")
+print("ok durability and wear-bar gradient")
 
 -- Critical blink.
 equip(p, "head", "test:helmet_diamond", 0)
@@ -399,7 +401,7 @@ for _, e in pairs(p.hud) do
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
 	elseif e.offset.x == 28 and e.z_index == 11 then
-		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#d9363e",
+		assert_eq(e.text, "mcl_armor_hud_pixel.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
 		assert_eq(e.scale.x, 2, "critical bar fill keeps its width")
 		visible_bars = visible_bars + 1
