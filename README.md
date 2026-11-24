@@ -83,7 +83,7 @@ of `src/settings.lua` to change them:
 |---|---:|---|
 | `icon_scale` | `2.25` | 45x45 px cells with 36 px items: three quarters of the `mcl_offhand` size. |
 | `offset_x` | `8` | Pixels from the anchored edge; ignored by `offhand`. For `right`, positive values move left. |
-| `offset_y` | `2` | Pixels above the bottom of the screen, matching `mcl_offhand`. |
+| `offset_y` | `2` | Pixels above the bottom of the screen; ignored by `offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
 | `critical_threshold` | `10` | Percentage at or below which the icon blinks. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
@@ -95,10 +95,10 @@ Validation rules:
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The default `offhand` anchor puts
-the group immediately to the right of the `mcl_offhand` slot, with the same
-bottom gap. `left`, `center` and `right` remain available; for those anchors,
+the group immediately to the right of the `mcl_offhand` slot and centers each
+smaller armor cell on the offhand slot. `left`, `center` and `right` remain available; for those anchors,
 positive horizontal offsets move the group right, except for `right`, where
-they move it left. `offset_x` is ignored by the `offhand` anchor.
+they move it left. `offset_x` and `offset_y` are ignored by the `offhand` anchor.
 
 ## How it works
 
