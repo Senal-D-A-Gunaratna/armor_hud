@@ -84,27 +84,32 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 
 ## Configuration
 
-Only three user settings (`settingtypes.txt`, read in `src/settings.lua`):
+Only two user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
 | `mcl_armor_hud_anchor` | `left` | `left`, `center`, `right` |
-| `mcl_armor_hud_icon_scale` | `2.0` | 0.25–4.0 |
 | `mcl_armor_hud_blink_interval` | `200` ms | 100–10000 |
 
 Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
 and range bounds.
 
+`icon_scale` is not a setting; it is fixed to `3.0` in `VALUES` so a 16 px
+item texture renders at 48 px inside a 60 px cell, the same size as
+`mcl_offhand`.
+
 All other values live in the `VALUES` table at `src/settings.lua:3` and are
-**not** settings: `offset_x=8`, `offset_y=8`, `icon_spacing=4`,
-`critical_threshold=10` (blink only), `poll_interval=0.5`.
+**not** settings: `icon_scale=3.0`, `offset_x=8`, `offset_y=8`,
+`icon_spacing=4`, `critical_threshold=10` (blink only), `poll_interval=0.5`.
 Layout uses
-`icon_px = 16 * icon_scale`, `cell_px = icon_px / 0.8` (same 48:60 proportion
-as `mcl_offhand`), `inset = (cell_px - icon_px)/2`,
-`step = cell_px + icon_spacing`, `bar_width = round(cell_px * 2/3)`, `bar_x = x + (cell_px - bar_width)/2`,
+`icon_px = 16 * icon_scale` (48 px), `cell_px = icon_px / 0.8` (60 px, exactly
+the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
+`step = cell_px + icon_spacing`, `bar_width = round(cell_px * 2/3)`,
+`bar_x = x + (cell_px - bar_width)/2`,
 `bar_height = max(2, round(cell_px/20))`, `cell_y = -offset_y`,
-`icon_y = -(offset_y + inset)`, `bar_y = -(offset_y + inset + bar_height)`. Right anchor: positive `offset_x` moves left; center/left:
-positive moves right. Edit `README.md` if this table changes.
+`icon_y = -(offset_y + inset)`, `bar_y = -(offset_y + inset + bar_height)`.
+Right anchor: positive `offset_x` moves left; center/left: positive moves
+right. Edit `README.md` if this table changes.
 
 ## Testing
 
@@ -116,7 +121,8 @@ positive moves right. Edit `README.md` if this table changes.
   blink with bar still visible, per-player isolation, diffing, lifecycle and
   all three anchors. To test non-configurable offsets, mutate the returned
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
-- Test pitfalls: a one-piece HUD has 4 elements; the cell uses z=9 and the
+- Test pitfalls: the default cell is 60 px with a 48 px item, and `icon_scale`
+  is source-defined (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
   item/bar use z=10/11/12. Wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
   advance `0.21` s per blink flip to avoid float boundary at exactly `0.2`.
@@ -140,8 +146,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the bar centering change:
-  `1153690`, clean tree.
+  commit unless asked. Current HEAD before the fixed offhand size change:
+  `bda9cb1`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.

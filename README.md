@@ -65,7 +65,7 @@ The mod depends on `mcl_armor`, `mcl_util`, `mcl_enchanting` and
 
 ## Configuration
 
-Three settings are read from `minetest.conf` (or the in-game **Settings**
+Two settings are read from `minetest.conf` (or the in-game **Settings**
 menu) and are applied at server start. All other behaviour is controlled by
 editable values in `src/settings.lua`, not by user settings.
 
@@ -74,7 +74,6 @@ editable values in `src/settings.lua`, not by user settings.
 | `mcl_armor_hud_anchor` | `left` | Horizontal anchor: `left`, `center` or `right`. |
 | `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `mcl_armor_hud_offset_y` | `8` | Pixels above the bottom of the screen. |
-| `mcl_armor_hud_icon_scale` | `2.0` | Scale of armor cells and items. At 1.0: 16x16 px item in a 20x20 px cell. |
 | `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source
@@ -84,6 +83,7 @@ of `src/settings.lua` to change them:
 
 | Value | Default | Description |
 |---|---:|---|
+| `icon_scale` | `3.0` | Fixed item size: 48x48 px items in 60x60 px cells, matching `mcl_offhand`. |
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `offset_y` | `8` | Pixels above the bottom of the screen. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
@@ -93,8 +93,7 @@ of `src/settings.lua` to change them:
 Validation rules:
 
 - Unknown anchors fall back to `left`.
-- `icon_scale` and `blink_interval` are clamped to the ranges declared in
-  `settingtypes.txt`.
+- `blink_interval` is clamped to the range declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The group is left-aligned,
@@ -151,11 +150,11 @@ Mineclonia release.
 - Settings require a server restart to take effect. Changing the source-defined
   values also requires restarting with the updated mod (and rebuilding the ZIP
   if you installed it from a release archive).
-- The HUD is server-side and uses image elements. Cell proportions follow
-  `mcl_offhand` (a 16 px item in a 20 px cell at scale 1.0), but Mineclonia's
-  textures are used instead of Minecraft's.
-- Very large icon scales or offsets can place the HUD off-screen. Values are
-  clamped to sane ranges but the mod does not measure the player's screen.
+- The HUD is server-side and uses image elements. Cell and item sizes match
+  `mcl_offhand` (60 px cell, 48 px item), but Mineclonia's textures are used
+  instead of Minecraft's.
+- Large offsets can place the HUD off-screen; the mod does not measure the
+  player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
   in lockstep with a piece that was already critical.
 
