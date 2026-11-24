@@ -60,9 +60,9 @@ enable in a game where those are unavailable.
 
 ## Configuration
 
-Settings are read from `minetest.conf` (or the in-game **Settings** menu) and
-are applied at server start. Edit `settingtypes.txt` only if you are developing
-the mod; users should not need to edit Lua source.
+Three settings are read from `minetest.conf` (or the in-game **Settings**
+menu) and are applied at server start. All other behaviour is controlled by
+editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
@@ -70,17 +70,29 @@ the mod; users should not need to edit Lua source.
 | `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `mcl_armor_hud_offset_y` | `8` | Pixels above the bottom of the screen. |
 | `mcl_armor_hud_icon_scale` | `1.0` | Scale of the 16x16 armor icons (1.0 = 16x16 px). |
-| `mcl_armor_hud_icon_spacing` | `4` | Pixels between adjacent icons. |
-| `mcl_armor_hud_warning_threshold` | `25` | Percentage at or below which the bar turns yellow. |
-| `mcl_armor_hud_critical_threshold` | `10` | Percentage at or below which the icon blinks and the bar turns red. |
 | `mcl_armor_hud_blink_interval` | `500` | Milliseconds between icon visibility flips (a full cycle is twice this). |
+
+### Editable values in the source
+
+The following are **not** user settings. Edit the `VALUES` table near the top
+of `src/settings.lua` to change them:
+
+| Value | Default | Description |
+|---|---:|---|
+| `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
+| `offset_y` | `8` | Pixels above the bottom of the screen. |
+| `icon_spacing` | `4` | Pixels between adjacent icons. |
+| `warning_threshold` | `25` | Percentage at or below which the bar turns yellow. |
+| `critical_threshold` | `10` | Percentage at or below which the icon blinks and the bar turns red. |
+| `poll_interval` | `0.5` | Seconds between durability polls. |
 
 Validation rules:
 
 - Unknown anchors fall back to `left`.
-- Numeric values are clamped to the ranges declared in `settingtypes.txt`.
-- If the critical threshold is greater than the warning threshold, it is
-  clamped to the warning threshold.
+- `icon_scale` and `blink_interval` are clamped to the ranges declared in
+  `settingtypes.txt`.
+- If the source-defined critical threshold is greater than the warning
+  threshold, it is clamped to the warning threshold.
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The group is left-aligned,
@@ -99,6 +111,9 @@ information.
 uses (including Unbreaking) and the engine's 0..65535 wear value for the
 remaining fraction. The formula matches Mineclonia's own elytra durability
 check: `remaining = (65536 - wear) * max_uses / 65536`.
+
+`src/settings.lua` reads the three user settings and holds the remaining
+layout, threshold and polling values as editable source constants.
 
 `src/hud.lua` manages image HUD elements per armor slot. Each piece has an icon,
 a bar background and a bar fill. `src/player.lua` owns all per-player state and
@@ -128,7 +143,9 @@ Mineclonia release.
 - If a third-party armor item is placed in an armor slot without being
   registered as an item, it is skipped.
 - Unbreakable armor (no finite durability) is shown as an icon without a bar.
-- Settings require a server restart to take effect.
+- Settings require a server restart to take effect. Changing the source-defined
+  values also requires restarting with the updated mod (and rebuilding the ZIP
+  if you installed it from a release archive).
 - The HUD is server-side and uses image elements; it does not attempt to
   reproduce Minecraft's exact pixel layout or textures.
 - Very large icon scales or offsets can place the HUD off-screen. Values are
