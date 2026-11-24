@@ -1,11 +1,12 @@
 [Mineclonia Armor HUD]
 
 # Horizontal anchor for the armor HUD. The group of equipped armor pieces is
-# laid out from this edge or from the screen centre.
-# left:   start at the left edge, growing right
-# center: centre the group on the screen
-# right:  start at the right edge, growing left
-mcl_armor_hud_anchor (Horizontal anchor) enum left left,center,right
+# laid out from this edge, centred, or beside the mcl_offhand slot.
+# offhand: immediately right of the mcl_offhand slot (default)
+# left:    start at the left edge, growing right
+# center:  centre the group on the screen
+# right:   start at the right edge, growing left
+mcl_armor_hud_anchor (Horizontal anchor) enum offhand offhand,left,center,right
 
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden

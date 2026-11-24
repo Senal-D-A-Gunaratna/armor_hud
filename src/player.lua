@@ -12,6 +12,8 @@ local poll_elapsed = 0
 -- Geometry used by mcl_offhand: 60 px cell, 48 px item, 40x3 bar. Its bar
 -- center is 19 px below the cell center (slot offset -32, bar offset -13).
 local OFFHAND_CELL_PX = 60
+local OFFHAND_SLOT_X = -320
+local OFFHAND_SLOT_GAP = 4
 local OFFHAND_TEXTURE_PX = 128
 local OFFHAND_BAR_W = 40
 local OFFHAND_BAR_H = 3
@@ -73,6 +75,9 @@ local function layout(piece_count)
 	elseif anchor == "center" then
 		pos_x = 0.5
 		start_x = -group_width / 2 + settings.offset_x
+	elseif anchor == "offhand" then
+		pos_x = 0.5
+		start_x = OFFHAND_SLOT_X + OFFHAND_CELL_PX / 2 + OFFHAND_SLOT_GAP
 	else
 		pos_x = 0
 		start_x = settings.offset_x
