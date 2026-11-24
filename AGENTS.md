@@ -90,10 +90,10 @@ Only two user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
-| `mcl_armor_hud_anchor` | `left` | `left`, `center`, `right` |
+| `mcl_armor_hud_anchor` | `offhand` | `offhand`, `left`, `center`, `right` |
 | `mcl_armor_hud_blink_interval` | `200` ms | 100–10000 |
 
-Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
+Invalid anchor falls back to `offhand`; non-numeric/clamped values use defaults
 and range bounds.
 
 `icon_scale` is not a setting; it is fixed to `2.25` in `VALUES` so a 16 px
@@ -113,8 +113,9 @@ quarters of the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
 `bar_center_from_cell_bottom = cell_px/2 - 19 * cell_px/60`,
 `bar_y = -(offset_y + bar_center_from_cell_bottom - bar_height/2)`. The bar
 overlays the lower part of the item, as in `mcl_offhand`.
-Right anchor: positive `offset_x` moves left; center/left: positive moves
-right. Edit `README.md` if this table changes.
+`offhand` anchor: group left edge is `OFFHAND_SLOT_X + 30 + 4 = -286` from
+screen center; `offset_x` is ignored. Right anchor: positive `offset_x` moves
+left; center/left: positive moves right. Edit `README.md` if this table changes.
 
 ## Testing
 
@@ -124,9 +125,10 @@ right. Edit `README.md` if this table changes.
   `debug.getinfo`, stubs `core`/`mcl_armor`/`mcl_util`/`mcl_enchanting`, and
   checks HUD calls, texture/alias/enchant cases, durability polling, colors,
   blink with bar still visible, per-player isolation, diffing, lifecycle and
-  all three anchors. To test non-configurable offsets, mutate the returned
+  all four anchors. To test non-configurable offsets, mutate the returned
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
-- Test pitfalls: the default cell is 45 px with a 36 px item and a 30x2 bar;
+- Test pitfalls: the default anchor is `offhand`, with the first cell at
+  x=-286 from screen center; the default cell is 45 px with a 36 px item and a 30x2 bar;
   cell texture is `mcl_offhand_slot.png^[resize:128x128`, item textures get the
   same suffix, HUD scales are 0.3515625/0.28125, and `icon_scale` is
   source-defined (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
@@ -153,8 +155,8 @@ right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before three-quarter scaling:
-  `c5ebe10`, clean tree.
+  commit unless asked. Current HEAD before the offhand anchor:
+  `169f044`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.

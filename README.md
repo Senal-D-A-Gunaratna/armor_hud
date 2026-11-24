@@ -71,9 +71,7 @@ editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
-| `mcl_armor_hud_anchor` | `left` | Horizontal anchor: `left`, `center` or `right`. |
-| `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
-| `mcl_armor_hud_offset_y` | `2` | Pixels above the bottom of the screen (matches `mcl_offhand`). |
+| `mcl_armor_hud_anchor` | `offhand` | Horizontal anchor: `offhand`, `left`, `center` or `right`. |
 | `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source
@@ -84,7 +82,7 @@ of `src/settings.lua` to change them:
 | Value | Default | Description |
 |---|---:|---|
 | `icon_scale` | `2.25` | 45x45 px cells with 36 px items: three quarters of the `mcl_offhand` size. |
-| `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
+| `offset_x` | `8` | Pixels from the anchored edge; ignored by `offhand`. For `right`, positive values move left. |
 | `offset_y` | `2` | Pixels above the bottom of the screen, matching `mcl_offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
 | `critical_threshold` | `10` | Percentage at or below which the icon blinks. |
@@ -92,14 +90,15 @@ of `src/settings.lua` to change them:
 
 Validation rules:
 
-- Unknown anchors fall back to `left`.
+- Unknown anchors fall back to `offhand`.
 - `blink_interval` is clamped to the range declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
-Only visible (equipped) pieces are laid out. The group is left-aligned,
-centered or right-aligned according to the anchor. Positive horizontal offsets
-move the group right for the `left` and `center` anchors and left for the
-`right` anchor.
+Only visible (equipped) pieces are laid out. The default `offhand` anchor puts
+the group immediately to the right of the `mcl_offhand` slot, with the same
+bottom gap. `left`, `center` and `right` remain available; for those anchors,
+positive horizontal offsets move the group right, except for `right`, where
+they move it left. `offset_x` is ignored by the `offhand` anchor.
 
 ## How it works
 
