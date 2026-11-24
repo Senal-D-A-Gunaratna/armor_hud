@@ -65,7 +65,7 @@ The mod depends on `mcl_armor`, `mcl_util`, `mcl_enchanting` and
 
 ## Configuration
 
-Two settings are read from `minetest.conf` (or the in-game **Settings**
+Three settings are read from `minetest.conf` (or the in-game **Settings**
 menu) and are applied at server start. All other behaviour is controlled by
 editable values in `src/settings.lua`, not by user settings.
 
@@ -73,6 +73,7 @@ editable values in `src/settings.lua`, not by user settings.
 |---|---:|---|
 | `armor_hud_anchor` | `offhand` | Horizontal anchor: `offhand`, `left`, `center` or `right`. |
 | `armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
+| `armor_hud_critical_threshold` | `10` | Durability percentage at or below which the icon blinks (`0` disables blinking). |
 
 ### Editable values in the source
 
@@ -85,13 +86,12 @@ of `src/settings.lua` to change them:
 | `offset_x` | `8` | Pixels from the anchored edge; ignored by `offhand`. For `right`, positive values move left. |
 | `offset_y` | `2` | Pixels above the bottom of the screen; ignored by `offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
-| `critical_threshold` | `10` | Percentage at or below which the icon blinks. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
 
 Validation rules:
 
 - Unknown anchors fall back to `offhand`.
-- `blink_interval` is clamped to the range declared in `settingtypes.txt`.
+- `blink_interval` and `critical_threshold` are clamped to the ranges declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The default `offhand` anchor uses
@@ -117,7 +117,7 @@ computed from the same wear value with the exact gradient Luanti uses for item
 durability bars and Mineclonia uses for its offhand wear bar.
 
 `src/settings.lua` reads the three user settings and holds the remaining
-layout, threshold and polling values as editable source constants.
+layout and polling values as editable source constants.
 
 `src/hud.lua` manages image HUD elements per armor slot. It applies the same
 `^[resize:128x128` texture step and HUD scales as `mcl_offhand`, so the cell and

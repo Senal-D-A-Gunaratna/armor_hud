@@ -24,7 +24,7 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 - `init.lua`: checks `mcl_armor.elements`, loads `src/*.lua` with `dofile`, calls
   `player.start(settings, armor, hud)`.
 - `src/settings.lua`: three user settings + `VALUES` table (source-defined
-  layout/threshold/poll values), validation and clamping.
+  layout/poll values), validation and clamping.
 - `src/armor.lua`: reads inventory list `armor` in `head, torso, legs, feet`
   order using `mcl_armor.elements[slot].index` (2,3,4,5); resolves aliases,
   item definitions and per-stack textures.
@@ -73,7 +73,8 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   `mcl_wear_bar.png` (1x1 white pixel) as their base texture. Bar background
   `#1b1b1b`; fill width =
   `round(bar_width * fraction)`.
-- Critical blink (`src/player.lua:84`): time between visibility *flips* is
+- Critical blink (`src/player.lua:84`): a piece is critical when
+  `percent <= critical_threshold`; time between visibility *flips* is
   `blink_interval` ms (full cycle = 2x). Only the icon is hidden; both bar
   elements stay visible. The phase resets when a piece first becomes critical.
 - There is no reliable Mineclonia armor-change callback: use
@@ -86,12 +87,13 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 
 ## Configuration
 
-Only two user settings (`settingtypes.txt`, read in `src/settings.lua`):
+Three user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
 | `armor_hud_anchor` | `offhand` | `offhand`, `left`, `center`, `right` |
 | `armor_hud_blink_interval` | `200` ms | 100–10000 |
+| `armor_hud_critical_threshold` | `10` % | 0–100 (0 disables blinking) |
 
 Invalid anchor falls back to `offhand`; non-numeric/clamped values use defaults
 and range bounds.
@@ -103,7 +105,7 @@ after the 128x128 resize.
 
 All other values live in the `VALUES` table at `src/settings.lua:3` and are
 **not** settings: `icon_scale=2.25`, `offset_x=8`, `offset_y=2`,
-`icon_spacing=4`, `critical_threshold=10` (blink only), `poll_interval=0.5`.
+`icon_spacing=4`, `poll_interval=0.5`.
 Layout uses
 `icon_px = 16 * icon_scale` (36 px), `cell_px = icon_px / 0.8` (45 px, three
 quarters of the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
@@ -128,8 +130,10 @@ left; center/left: positive moves right. Edit `README.md` if this table changes.
   `debug.getinfo`, stubs `core`/`mcl_armor`/`mcl_util`/`mcl_enchanting`, and
   checks HUD calls, texture/alias/enchant cases, durability polling, colors,
   blink with bar still visible, per-player isolation, diffing, lifecycle,
-  all four anchors and the offhand-visibility shift. To test non-configurable offsets, mutate the returned
-  config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
+  all four anchors, the offhand-visibility shift and the configurable critical
+  threshold. To test non-configurable offsets, mutate the returned
+  config table after `load_mod()` (e.g. `cfg.offset_x = 10`), which also works
+  for `critical_threshold` because `player.lua` holds the same table reference.
 - Test pitfalls: the default anchor is `offhand`, with the first cell at
   x=-516 from screen center (or -580 while an offhand item is present) and cell
   bottom y=0 (cell center y=-22.5); the default cell is 45 px with a 36 px item and a 30x2 bar;

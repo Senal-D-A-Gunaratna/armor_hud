@@ -5,13 +5,13 @@ local VALUES = {
 	offset_y = 2,
 	icon_scale = 2.25,
 	icon_spacing = 4,
-	critical_threshold = 10,
 	poll_interval = 0.5,
 }
 
 local DEFAULTS = {
 	anchor = "offhand",
 	blink_interval = 200,
+	critical_threshold = 10,
 }
 
 local function number_setting(name, default, min, max)
@@ -39,6 +39,9 @@ function M.load()
 
 		-- This is the time between two visibility flips, not the full cycle.
 		blink_interval = integer_setting("armor_hud_blink_interval", DEFAULTS.blink_interval, 100, 10000),
+
+		critical_threshold = integer_setting("armor_hud_critical_threshold",
+			DEFAULTS.critical_threshold, 0, 100),
 	}
 
 	for key, value in pairs(VALUES) do

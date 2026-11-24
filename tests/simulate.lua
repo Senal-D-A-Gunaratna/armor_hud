@@ -266,6 +266,7 @@ local function defaults()
 	return {
 		armor_hud_anchor = "offhand",
 		armor_hud_blink_interval = "200",
+		armor_hud_critical_threshold = "10",
 	}
 end
 
@@ -284,16 +285,20 @@ end
 settings_values = defaults()
 settings_values.armor_hud_anchor = " side "
 settings_values.armor_hud_blink_interval = "zero"
+settings_values.armor_hud_critical_threshold = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "offhand", "invalid anchor fallback")
 assert_eq(load_mod().anchor, "offhand", "offhand is the default anchor")
 assert_eq(s.icon_scale, 2.25, "source-defined icon scale")
 assert_eq(s.blink_interval, 200, "blink fallback")
+assert_eq(s.critical_threshold, 10, "critical threshold fallback")
 assert_eq(s.offset_x, 8, "source-defined horizontal offset")
 assert_eq(s.offset_y, 2, "source-defined vertical offset")
 assert_eq(s.icon_spacing, 4, "source-defined spacing")
-assert_eq(s.critical_threshold, 10, "source-defined critical threshold")
 assert_eq(s.poll_interval, 0.5, "source-defined poll interval")
+settings_values.armor_hud_critical_threshold = "150"
+s = dofile(MODPATH .. "/src/settings.lua").load()
+assert_eq(s.critical_threshold, 100, "critical threshold clamped")
 print("ok settings parsing")
 
 settings_values = defaults()
@@ -566,5 +571,24 @@ assert_eq(is[1].e.position.x, 1, "right position")
 assert_true(near(is[1].e.offset.x, -99.5), "right first x")
 assert_true(near(is[2].e.offset.x, -50.5), "right second x")
 print("ok right positioning")
+
+-- Configurable critical threshold drives the blink state.
+settings_values = defaults()
+settings_values.armor_hud_critical_threshold = "25"
+local threshold_cfg = load_mod()
+assert_eq(threshold_cfg.critical_threshold, 25, "critical threshold setting")
+local e = join("eve")
+advance(0.02)
+equip(e, "torso", "test:chest_iron", 49152)
+advance(0.02)
+assert_eq(icons(e)[1].e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128",
+	"critical icon visible initially")
+advance(0.21)
+assert_eq(icons(e)[1].e.text, "", "custom threshold makes 25% critical")
+threshold_cfg.critical_threshold = 10
+advance(0.6)
+assert_eq(icons(e)[1].e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128",
+	"lowering threshold clears critical state")
+print("ok configurable critical threshold")
 
 print("\nALL SIMULATED TESTS PASSED")

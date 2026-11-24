@@ -1,4 +1,4 @@
-[Mineclonia Armor HUD]
+[Armor HUD]
 
 # Horizontal anchor for the armor HUD. The group of equipped armor pieces is
 # laid out from this edge, centred, or beside the mcl_offhand slot.
@@ -13,3 +13,7 @@ armor_hud_anchor (Horizontal anchor) enum offhand offhand,left,center,right
 # every 200 ms (a full on/off cycle takes 400 ms). The durability bar stays
 # visible at all times.
 armor_hud_blink_interval (Blink interval, ms) int 200 100 10000
+
+# Durability percentage at or below which an armor piece's icon blinks while
+# its durability bar stays visible. 0 effectively disables blinking.
+armor_hud_critical_threshold (Critical durability threshold, %) int 10 0 100
