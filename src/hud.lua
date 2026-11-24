@@ -64,6 +64,7 @@ function H.update_piece(player, rec, p)
 	local fill_shown = p.has_bar and p.fill_px > 0
 	local fill_text = fill_shown and bar_texture(p.bar_color) or ""
 	local item_x = p.x + p.inset
+	local bar_x = p.x + (p.cell_px - p.bar_width) / 2
 	local cell_scale = p.cell_px / CELL_TEXTURE_SIZE
 
 	if not rec.cell_id then
@@ -94,29 +95,29 @@ function H.update_piece(player, rec, p)
 
 	if not rec.bg_id then
 		rec.bg_id = add_image(player, p,
-			{ x = item_x, y = p.bar_y },
+			{ x = bar_x, y = p.bar_y },
 			{ x = p.bar_width, y = p.bar_height },
 			bar_bg_text, Z_BAR_BG)
 		rec.bg_text = bar_bg_text
-		rec.bg_x, rec.bg_y = item_x, p.bar_y
+		rec.bg_x, rec.bg_y = bar_x, p.bar_y
 		rec.bg_w, rec.bg_h = p.bar_width, p.bar_height
 	else
 		set_text(player, rec.bg_id, rec, "bg_text", bar_bg_text)
-		set_offset(player, rec.bg_id, rec, "bg", item_x, p.bar_y)
+		set_offset(player, rec.bg_id, rec, "bg", bar_x, p.bar_y)
 		set_scale(player, rec.bg_id, rec, "bg", p.bar_width, p.bar_height)
 	end
 
 	if not rec.fill_id then
 		rec.fill_id = add_image(player, p,
-			{ x = item_x, y = p.bar_y },
+			{ x = bar_x, y = p.bar_y },
 			{ x = p.fill_px, y = p.bar_height },
 			fill_text, Z_BAR_FILL)
 		rec.fill_text = fill_text
-		rec.fill_x, rec.fill_y = item_x, p.bar_y
+		rec.fill_x, rec.fill_y = bar_x, p.bar_y
 		rec.fill_w, rec.fill_h = p.fill_px, p.bar_height
 	else
 		set_text(player, rec.fill_id, rec, "fill_text", fill_text)
-		set_offset(player, rec.fill_id, rec, "fill", item_x, p.bar_y)
+		set_offset(player, rec.fill_id, rec, "fill", bar_x, p.bar_y)
 		set_scale(player, rec.fill_id, rec, "fill", p.fill_px, p.bar_height)
 	end
 
