@@ -59,7 +59,9 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   `mcl_offhand_slot.png`), item icon (z=10), bar background (z=11), bar fill
   (z=12). The cell texture is 22x22 px scaled to `cell_px`; item is centered
   with `inset` padding; the bar sits just below the item, horizontally centered
-  in the cell, inside the cell. `type="image"`, `position={x=pos_x,y=1}`,
+  in the cell, inside the cell. Cell and item textures are both resized to
+  128x128 with `^[resize:128x128` and drawn at HUD scales 0.46875 and 0.375 —
+  exactly the `mcl_offhand` rendering path. `type="image"`, `position={x=pos_x,y=1}`,
   `alignment={x=1,y=-1}`. With y=-1 the element's bottom edge is at
   `position.y + offset.y`; with x=1 it starts at the left edge of the anchor.
   `scale=1` renders a 16x16 texture at native size. Bar color uses Mineclonia's
@@ -94,16 +96,17 @@ Only two user settings (`settingtypes.txt`, read in `src/settings.lua`):
 Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
 and range bounds.
 
-`icon_scale` is not a setting; it is fixed to `2.5` in `VALUES` so a 16 px
-item texture renders at 40 px inside a 50 px cell, scaled from the
-`mcl_offhand` 48 px item / 60 px cell ratio.
+`icon_scale` is not a setting; it is fixed to `3.0` in `VALUES` so a 16 px
+item texture fills a 48 px item inside a 60 px cell, the exact `mcl_offhand`
+size. HUD scales become 0.375 (item) and 0.46875 (cell) after the 128x128
+resize.
 
 All other values live in the `VALUES` table at `src/settings.lua:3` and are
-**not** settings: `icon_scale=2.5`, `offset_x=8`, `offset_y=8`,
+**not** settings: `icon_scale=3.0`, `offset_x=8`, `offset_y=8`,
 `icon_spacing=4`, `critical_threshold=10` (blink only), `poll_interval=0.5`.
 Layout uses
-`icon_px = 16 * icon_scale` (40 px), `cell_px = icon_px / 0.8` (50 px,
-scaled from the `mcl_offhand` 48 px item / 60 px cell ratio), `inset = (cell_px - icon_px)/2`,
+`icon_px = 16 * icon_scale` (48 px), `cell_px = icon_px / 0.8` (60 px, exactly
+the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
 `step = cell_px + icon_spacing`, `bar_width = round(40 * cell_px/60)`,
 `bar_height = round(3 * cell_px/60)`, `bar_x = x + (cell_px - bar_width)/2`,
 `cell_y = -offset_y`, `icon_y = -(offset_y + inset)`,
@@ -123,8 +126,10 @@ right. Edit `README.md` if this table changes.
   blink with bar still visible, per-player isolation, diffing, lifecycle and
   all three anchors. To test non-configurable offsets, mutate the returned
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
-- Test pitfalls: the default cell is 50 px with a 40 px item and a 33x3 bar,
-  and `icon_scale` is source-defined (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
+- Test pitfalls: the default cell is 60 px with a 48 px item and a 40x3 bar;
+  cell texture is `mcl_offhand_slot.png^[resize:128x128`, item textures get the
+  same suffix, HUD scales are 0.46875/0.375, and `icon_scale` is source-defined
+  (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
   item/bar use z=10/11/12. Wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
   advance `0.21` s per blink flip to avoid float boundary at exactly `0.2`.
@@ -148,8 +153,8 @@ right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the bar bottom-edge fix:
-  `303703b`, clean tree.
+  commit unless asked. Current HEAD before exact offhand rendering:
+  `e97f0d5`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.

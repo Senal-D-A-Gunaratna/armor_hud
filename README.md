@@ -83,7 +83,7 @@ of `src/settings.lua` to change them:
 
 | Value | Default | Description |
 |---|---:|---|
-| `icon_scale` | `2.5` | Fixed size: 50x50 px cells with 40 px items, scaled from `mcl_offhand`. |
+| `icon_scale` | `3.0` | Exact `mcl_offhand` size: 60x60 px cells with 48 px items. |
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `offset_y` | `8` | Pixels above the bottom of the screen. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
@@ -118,8 +118,10 @@ durability bars and Mineclonia uses for its offhand wear bar.
 `src/settings.lua` reads the three user settings and holds the remaining
 layout, threshold and polling values as editable source constants.
 
-`src/hud.lua` manages image HUD elements per armor slot. Each piece has four
-elements: the Mineclonia inventory-cell background, the full-size item image,
+`src/hud.lua` manages image HUD elements per armor slot. It applies the same
+`^[resize:128x128` texture step and HUD scales as `mcl_offhand`, so the cell and
+item render identically. Each piece has four elements: the Mineclonia
+inventory-cell background, the full-size item image,
 a bar background and a bar fill inside the cell, positioned like
 `mcl_offhand`: the bar is centered horizontally and overlays the lower part of
 the item instead of sitting below it. `src/player.lua`
@@ -152,9 +154,9 @@ Mineclonia release.
 - Settings require a server restart to take effect. Changing the source-defined
   values also requires restarting with the updated mod (and rebuilding the ZIP
   if you installed it from a release archive).
-- The HUD is server-side and uses image elements. It uses the same
-  `mcl_offhand` cell texture and bar geometry, scaled from a 60 px cell with a
-  48 px item and a 40x3 bar to a 50 px cell with a 40 px item and a 33x3 bar.
+- The HUD is server-side and uses image elements. It renders the cell and item
+  exactly like `mcl_offhand`: both textures are resized to 128x128, then drawn
+  with scales 0.46875 and 0.375 (60 px cell, 48 px item, 40x3 bar).
 - Large offsets can place the HUD off-screen; the mod does not measure the
   player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
