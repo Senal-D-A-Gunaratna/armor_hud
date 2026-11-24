@@ -35,10 +35,10 @@ end
 
 function M.load()
 	local s = {
-		anchor = (core.settings:get("mcl_armor_hud_anchor") or "offhand"):lower(),
+		anchor = (core.settings:get("armor_hud_anchor") or "offhand"):lower(),
 
 		-- This is the time between two visibility flips, not the full cycle.
-		blink_interval = integer_setting("mcl_armor_hud_blink_interval", DEFAULTS.blink_interval, 100, 10000),
+		blink_interval = integer_setting("armor_hud_blink_interval", DEFAULTS.blink_interval, 100, 10000),
 	}
 
 	for key, value in pairs(VALUES) do
@@ -47,7 +47,7 @@ function M.load()
 
 	if s.anchor ~= "left" and s.anchor ~= "center" and
 		s.anchor ~= "right" and s.anchor ~= "offhand" then
-		core.log("warning", '[mcl_armor_hud] Invalid mcl_armor_hud_anchor; using "offhand"')
+		core.log("warning", '[armor_hud] Invalid armor_hud_anchor; using "offhand"')
 		s.anchor = DEFAULTS.anchor
 	end
 

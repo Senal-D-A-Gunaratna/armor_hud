@@ -54,7 +54,7 @@ The implementation was researched against Mineclonia `game.conf` release
 
 ## Installation
 
-1. Copy the `mcl_armor_hud` directory into your world's `mods` directory, or
+1. Copy the `armor_hud` directory into your world's `mods` directory, or
    into the global `mods` directory used by your Luanti installation.
 2. Enable the mod for the world.
 3. Start the world. The mod has no formspec, chat command or item; it works
@@ -71,8 +71,8 @@ editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
-| `mcl_armor_hud_anchor` | `offhand` | Horizontal anchor: `offhand`, `left`, `center` or `right`. |
-| `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
+| `armor_hud_anchor` | `offhand` | Horizontal anchor: `offhand`, `left`, `center` or `right`. |
+| `armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source
 

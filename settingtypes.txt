@@ -6,10 +6,10 @@
 # left:    start at the left edge, growing right
 # center:  centre the group on the screen
 # right:   start at the right edge, growing left
-mcl_armor_hud_anchor (Horizontal anchor) enum offhand offhand,left,center,right
+armor_hud_anchor (Horizontal anchor) enum offhand offhand,left,center,right
 
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden
 # every 200 ms (a full on/off cycle takes 400 ms). The durability bar stays
 # visible at all times.
-mcl_armor_hud_blink_interval (Blink interval, ms) int 200 100 10000
+armor_hud_blink_interval (Blink interval, ms) int 200 100 10000

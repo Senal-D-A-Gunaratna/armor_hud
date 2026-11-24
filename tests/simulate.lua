@@ -1,4 +1,4 @@
--- Standalone simulation harness for mcl_armor_hud.
+-- Standalone simulation harness for armor_hud.
 -- Run from the mod directory with: luajit tests/simulate.lua
 -- It stubs only the Luanti/Mineclonia surface used by the mod and checks the
 -- HUD calls emitted in response to joins, equipment changes and globalsteps.
@@ -95,9 +95,9 @@ end
 
 core = {}
 core.settings = { get = function(_, k) return settings_values[k] end }
-core.get_current_modname = function() return "mcl_armor_hud" end
+core.get_current_modname = function() return "armor_hud" end
 core.get_modpath = function(name)
-	assert(name == "mcl_armor_hud")
+	assert(name == "armor_hud")
 	return MODPATH
 end
 core.log = function() end
@@ -264,8 +264,8 @@ local RESIZE = "^[resize:128x128"
 
 local function defaults()
 	return {
-		mcl_armor_hud_anchor = "offhand",
-		mcl_armor_hud_blink_interval = "200",
+		armor_hud_anchor = "offhand",
+		armor_hud_blink_interval = "200",
 	}
 end
 
@@ -282,8 +282,8 @@ end
 
 -- Settings validation.
 settings_values = defaults()
-settings_values.mcl_armor_hud_anchor = " side "
-settings_values.mcl_armor_hud_blink_interval = "zero"
+settings_values.armor_hud_anchor = " side "
+settings_values.armor_hud_blink_interval = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "offhand", "invalid anchor fallback")
 assert_eq(load_mod().anchor, "offhand", "offhand is the default anchor")
@@ -534,7 +534,7 @@ print("ok lifecycle")
 
 -- Center and right anchoring.
 settings_values = defaults()
-settings_values.mcl_armor_hud_anchor = "center"
+settings_values.armor_hud_anchor = "center"
 local center_cfg = load_mod()
 center_cfg.offset_x = 10
 center_cfg.offset_y = 20
@@ -552,7 +552,7 @@ assert_true(near(bar_elements(c)[1].e.offset.y, -27.25), "custom bar vertical of
 print("ok center positioning")
 
 settings_values = defaults()
-settings_values.mcl_armor_hud_anchor = "right"
+settings_values.armor_hud_anchor = "right"
 local right_cfg = load_mod()
 right_cfg.offset_x = 10
 right_cfg.offset_y = 20

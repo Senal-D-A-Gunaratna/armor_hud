@@ -34,7 +34,7 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 - `src/player.lua`: per-player state, layout, blink, lifecycle, polling.
 - `tests/simulate.lua`: standalone LuaJIT simulation harness.
 - `README.md`, `settingtypes.txt`, `mod.conf`: user-facing docs/metadata.
-- `mcl_armor_hud.zip` (in parent `mods/` dir): release archive, rebuild after
+- `armor_hud.zip` (in parent `mods/` dir): release archive, rebuild after
   every change.
 
 ## Runtime facts
@@ -90,8 +90,8 @@ Only two user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
-| `mcl_armor_hud_anchor` | `offhand` | `offhand`, `left`, `center`, `right` |
-| `mcl_armor_hud_blink_interval` | `200` ms | 100–10000 |
+| `armor_hud_anchor` | `offhand` | `offhand`, `left`, `center`, `right` |
+| `armor_hud_blink_interval` | `200` ms | 100–10000 |
 
 Invalid anchor falls back to `offhand`; non-numeric/clamped values use defaults
 and range bounds.
@@ -142,25 +142,24 @@ left; center/left: positive moves right. Edit `README.md` if this table changes.
   Expected gradient colors: wear 0 → `#0aff00`, 32768 → `#ffc900`,
   49152 → `#ff3300`, 59000 → `#ff0000`.
 - Headless load: world at `/tmp/opencode/armor_hud_world` with `world.mt`:
-  `gameid = mineclonia`, sqlite3 backends, `load_mod_mcl_armor_hud = true`.
+  `gameid = mineclonia`, sqlite3 backends, `load_mod_armor_hud = true`.
   Run `timeout 12s luanti --server --world /tmp/opencode/armor_hud_world
   --gameid mineclonia --port 39019 --logfile .../debug.txt --verbose`;
   exit `124` (timeout) is expected. Grep stdout for
-  `Mod "mcl_armor_hud" loaded` and absence of `ERROR|WARNING`. No live
+  `Mod "armor_hud" loaded` and absence of `ERROR|WARNING`. No live
   graphical client test has been done.
 
 ## Packaging and workflow
 
-- Build: from `/home/senal/.minetest/mods`, `zip -qr mcl_armor_hud.zip
-  mcl_armor_hud -x 'mcl_armor_hud/.git/*' 'mcl_armor_hud/.git'`. Validate with
+- Build: from `/home/senal/.minetest/mods`, `zip -qr armor_hud.zip
+  armor_hud -x 'armor_hud/.git/*' 'armor_hud/.git'`. Validate with
   `unzip -t` and by extracting to `/tmp/opencode/zipcheck/mods` and running
   `diff -r --exclude=.git`.
 - Loading a ZIP copy via `LUANTI_MOD_PATH` requires moving the global source
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before bottom-flush Y:
-  `80f750e`, clean tree.
+  commit unless asked. Current HEAD: `3511b81`.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.
