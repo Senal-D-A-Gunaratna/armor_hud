@@ -13,6 +13,7 @@ local poll_elapsed = 0
 -- center is 19 px below the cell center (slot offset -32, bar offset -13).
 local OFFHAND_CELL_PX = 60
 local OFFHAND_SLOT_X = -320
+local OFFHAND_SLOT_Y = -32
 local OFFHAND_SLOT_GAP = 4
 local OFFHAND_TEXTURE_PX = 128
 local OFFHAND_BAR_W = 40
@@ -68,7 +69,7 @@ local function layout(piece_count)
 		group_width = piece_count * cell_px + (piece_count - 1) * spacing
 	end
 
-	local pos_x, start_x
+	local pos_x, start_x, cell_y
 	if anchor == "right" then
 		pos_x = 1
 		start_x = -group_width - settings.offset_x
@@ -78,9 +79,14 @@ local function layout(piece_count)
 	elseif anchor == "offhand" then
 		pos_x = 0.5
 		start_x = OFFHAND_SLOT_X + OFFHAND_CELL_PX / 2 + OFFHAND_SLOT_GAP
+		cell_y = OFFHAND_SLOT_Y + cell_px / 2
 	else
 		pos_x = 0
 		start_x = settings.offset_x
+	end
+
+	if not cell_y then
+		cell_y = -settings.offset_y
 	end
 
 	local offhand_scale = cell_px / OFFHAND_CELL_PX
@@ -98,10 +104,9 @@ local function layout(piece_count)
 		icon_scale = icon_px / OFFHAND_TEXTURE_PX,
 		bar_width = bar_width,
 		bar_height = bar_height,
-		cell_y = -settings.offset_y,
-		icon_y = -(settings.offset_y + inset),
-		bar_y = -(settings.offset_y + bar_center_from_cell_bottom -
-			bar_height / 2),
+		cell_y = cell_y,
+		icon_y = cell_y - inset,
+		bar_y = cell_y - (bar_center_from_cell_bottom - bar_height / 2),
 	}
 end
 
