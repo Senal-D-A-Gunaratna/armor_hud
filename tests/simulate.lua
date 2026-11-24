@@ -263,12 +263,7 @@ local function near(a, b) return math.abs(a - b) < 0.001 end
 local function defaults()
 	return {
 		mcl_armor_hud_anchor = "left",
-		mcl_armor_hud_offset_x = "8",
-		mcl_armor_hud_offset_y = "8",
 		mcl_armor_hud_icon_scale = "1.0",
-		mcl_armor_hud_icon_spacing = "4",
-		mcl_armor_hud_warning_threshold = "25",
-		mcl_armor_hud_critical_threshold = "10",
 		mcl_armor_hud_blink_interval = "500",
 	}
 end
@@ -287,21 +282,18 @@ end
 -- Settings validation.
 settings_values = defaults()
 settings_values.mcl_armor_hud_anchor = " side "
-settings_values.mcl_armor_hud_offset_x = "nope"
-settings_values.mcl_armor_hud_offset_y = "-5"
 settings_values.mcl_armor_hud_icon_scale = "99"
-settings_values.mcl_armor_hud_icon_spacing = "999"
-settings_values.mcl_armor_hud_warning_threshold = "20"
-settings_values.mcl_armor_hud_critical_threshold = "80"
 settings_values.mcl_armor_hud_blink_interval = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "left", "invalid anchor fallback")
-assert_eq(s.offset_x, 8, "invalid offset fallback")
-assert_eq(s.offset_y, 0, "negative offset clamped")
 assert_eq(s.icon_scale, 4, "icon scale clamped")
-assert_eq(s.icon_spacing, 64, "spacing clamped")
-assert_eq(s.critical_threshold, 20, "critical clamped to warning")
 assert_eq(s.blink_interval, 500, "blink fallback")
+assert_eq(s.offset_x, 8, "source-defined horizontal offset")
+assert_eq(s.offset_y, 8, "source-defined vertical offset")
+assert_eq(s.icon_spacing, 4, "source-defined spacing")
+assert_eq(s.warning_threshold, 25, "source-defined warning threshold")
+assert_eq(s.critical_threshold, 10, "source-defined critical threshold")
+assert_eq(s.poll_interval, 0.5, "source-defined poll interval")
 print("ok settings parsing")
 
 settings_values = defaults()
@@ -516,9 +508,9 @@ print("ok lifecycle")
 -- Center and right anchoring.
 settings_values = defaults()
 settings_values.mcl_armor_hud_anchor = "center"
-settings_values.mcl_armor_hud_offset_x = "10"
-settings_values.mcl_armor_hud_offset_y = "20"
-load_mod()
+local center_cfg = load_mod()
+center_cfg.offset_x = 10
+center_cfg.offset_y = 20
 local c = join("center")
 advance(0.02)
 equip(c, "head", "test:helmet_iron", 0)
@@ -534,9 +526,9 @@ print("ok center positioning")
 
 settings_values = defaults()
 settings_values.mcl_armor_hud_anchor = "right"
-settings_values.mcl_armor_hud_offset_x = "10"
-settings_values.mcl_armor_hud_offset_y = "20"
-load_mod()
+local right_cfg = load_mod()
+right_cfg.offset_x = 10
+right_cfg.offset_y = 20
 local rr = join("right")
 advance(0.02)
 equip(rr, "head", "test:helmet_iron", 0)
