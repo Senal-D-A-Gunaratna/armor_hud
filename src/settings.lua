@@ -2,7 +2,7 @@ local M = {}
 
 local VALUES = {
 	offset_x = 8,
-	offset_y = 8,
+	offset_y = 2,
 	icon_scale = 3.0,
 	icon_spacing = 4,
 	critical_threshold = 10,
