@@ -84,7 +84,7 @@ Only three user settings (`settingtypes.txt`, read in `src/settings.lua`):
 |---|---:|---|
 | `mcl_armor_hud_anchor` | `left` | `left`, `center`, `right` |
 | `mcl_armor_hud_icon_scale` | `1.0` | 0.25–4.0 |
-| `mcl_armor_hud_blink_interval` | `500` ms | 100–10000 |
+| `mcl_armor_hud_blink_interval` | `200` ms | 100–10000 |
 
 Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
 and range bounds.
@@ -111,7 +111,7 @@ positive moves right. Edit `README.md` if this table changes.
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
 - Test pitfalls: wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
-  advance `0.51` s per blink flip to avoid float boundary at exactly `0.5`.
+  advance `0.21` s per blink flip to avoid float boundary at exactly `0.2`.
   Expected gradient colors: wear 0 → `#0aff00`, 32768 → `#ffc900`,
   49152 → `#ff3300`, 59000 → `#ff0000`.
 - Headless load: world at `/tmp/opencode/armor_hud_world` with `world.mt`:
@@ -132,8 +132,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the wear-bar gradient change:
-  `6063840`, clean tree.
+  commit unless asked. Current HEAD before the blink interval change:
+  `9dbb862`, clean tree.
 - History note: an inventory-cell redesign was committed once and then
   discarded by an external `git reset` to `bfa374f`; the current code is the
   simple icon + durability-bar design. Do not assume those cell commits exist.
