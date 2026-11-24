@@ -332,6 +332,21 @@ assert_eq(b[2].e.scale.y, 2, "scaled offhand bar height")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
 
+-- Offhand HUD visibility shifts the fixed offhand anchor left.
+core.registered_items["test:offhand"] = { inventory_image = "test_offhand.png" }
+p.inv:set_size("offhand", 1)
+p.inv:set_stack("offhand", 1, Stack.new("test:offhand"))
+advance(0.6)
+local shifted_cell
+for _, e in pairs(p.hud) do if e.z_index == 9 then shifted_cell = e end end
+assert_true(near(shifted_cell.offset.x, -350), "offhand HUD shifts armor HUD left")
+p.inv:set_stack("offhand", 1, Stack.new(""))
+advance(0.6)
+local restored_cell
+for _, e in pairs(p.hud) do if e.z_index == 9 then restored_cell = e end end
+assert_true(near(restored_cell.offset.x, -286), "armor HUD returns when offhand is hidden")
+print("ok offhand visibility shift")
+
 -- All four pieces.
 equip(p, "torso", "test:chest_iron", 0)
 equip(p, "legs", "test:legs_iron", 0)
