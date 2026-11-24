@@ -6,9 +6,11 @@ local PIXEL = "mcl_wear_bar.png"
 local BAR_BACKGROUND = PIXEL .. "^[colorize:#1b1b1b"
 
 -- Mineclonia's own inventory-cell texture, used by mcl_offhand for the slot
--- behind the offhand item. Referenced at runtime; no media is shipped.
-local CELL = "mcl_offhand_slot.png"
-local CELL_TEXTURE_SIZE = 22
+-- behind the offhand item. It resizes both the slot and the item texture to
+-- 128x128 before applying HUD scales; do the same for pixel-identical results.
+local TEXTURE_PX = 128
+local CELL = "mcl_offhand_slot.png^[resize:" .. TEXTURE_PX .. "x" .. TEXTURE_PX
+local CELL_TEXTURE_SIZE = TEXTURE_PX
 
 local Z_CELL = 9
 local Z_ICON = 10
@@ -17,6 +19,13 @@ local Z_BAR_FILL = 12
 
 local function bar_texture(color)
 	return PIXEL .. "^[colorize:" .. color
+end
+
+local function item_texture(text)
+	if text == "" or text:find("^[resize:", 1, true) then
+		return text
+	end
+	return text .. "^[resize:" .. TEXTURE_PX .. "x" .. TEXTURE_PX
 end
 
 local function add_image(player, p, offset, scale, text, z_index)
@@ -56,10 +65,10 @@ end
 
 ---Create or update one armor piece's HUD elements.
 ---p fields:
----  pos_x, x, cell_y, cell_px, inset, icon_y, icon_scale, icon_text,
+---  pos_x, x, cell_y, cell_px, inset, icon_y, icon_scale (HUD scale), icon_text,
 ---  icon_visible, has_bar, bar_y, bar_width, bar_height, fill_px, bar_color
 function H.update_piece(player, rec, p)
-	local icon_text = p.icon_visible and p.icon_text or ""
+	local icon_text = p.icon_visible and item_texture(p.icon_text) or ""
 	local bar_bg_text = p.has_bar and BAR_BACKGROUND or ""
 	local fill_shown = p.has_bar and p.fill_px > 0
 	local fill_text = fill_shown and bar_texture(p.bar_color) or ""

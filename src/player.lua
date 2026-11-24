@@ -12,6 +12,7 @@ local poll_elapsed = 0
 -- Geometry used by mcl_offhand: 60 px cell, 48 px item, 40x3 bar. Its bar
 -- center is 19 px below the cell center (slot offset -32, bar offset -13).
 local OFFHAND_CELL_PX = 60
+local OFFHAND_TEXTURE_PX = 128
 local OFFHAND_BAR_W = 40
 local OFFHAND_BAR_H = 3
 local OFFHAND_BAR_CENTER_DY = 19
@@ -89,6 +90,7 @@ local function layout(piece_count)
 		step = cell_px + spacing,
 		cell_px = cell_px,
 		inset = inset,
+		icon_scale = icon_px / OFFHAND_TEXTURE_PX,
 		bar_width = bar_width,
 		bar_height = bar_height,
 		cell_y = -settings.offset_y,
@@ -157,7 +159,7 @@ local function refresh(player, state)
 			cell_px = l.cell_px,
 			inset = l.inset,
 			icon_y = l.icon_y,
-			icon_scale = settings.icon_scale,
+			icon_scale = l.icon_scale,
 			icon_text = piece.texture,
 			has_bar = d ~= nil,
 			bar_y = l.bar_y,
