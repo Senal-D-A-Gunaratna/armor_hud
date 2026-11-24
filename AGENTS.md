@@ -58,7 +58,8 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 - HUD elements (`src/hud.lua`): four per piece — cell background (z=9,
   `mcl_offhand_slot.png`), item icon (z=10), bar background (z=11), bar fill
   (z=12). The cell texture is 22x22 px scaled to `cell_px`; item is centered
-  with `inset` padding; the bar sits just below the item, inside the cell. `type="image"`, `position={x=pos_x,y=1}`,
+  with `inset` padding; the bar sits just below the item, horizontally centered
+  in the cell, inside the cell. `type="image"`, `position={x=pos_x,y=1}`,
   `alignment={x=1,y=-1}`. With y=-1 the element's bottom edge is at
   `position.y + offset.y`; with x=1 it starts at the left edge of the anchor.
   `scale=1` renders a 16x16 texture at native size. Bar color uses Mineclonia's
@@ -100,7 +101,7 @@ All other values live in the `VALUES` table at `src/settings.lua:3` and are
 Layout uses
 `icon_px = 16 * icon_scale`, `cell_px = icon_px / 0.8` (same 48:60 proportion
 as `mcl_offhand`), `inset = (cell_px - icon_px)/2`,
-`step = cell_px + icon_spacing`, `bar_width = round(cell_px * 2/3)`,
+`step = cell_px + icon_spacing`, `bar_width = round(cell_px * 2/3)`, `bar_x = x + (cell_px - bar_width)/2`,
 `bar_height = max(2, round(cell_px/20))`, `cell_y = -offset_y`,
 `icon_y = -(offset_y + inset)`, `bar_y = -(offset_y + inset + bar_height)`. Right anchor: positive `offset_x` moves left; center/left:
 positive moves right. Edit `README.md` if this table changes.
@@ -139,8 +140,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the inventory-cell change:
-  `90f9fe2`, clean tree.
+  commit unless asked. Current HEAD before the bar centering change:
+  `1153690`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.

@@ -15,7 +15,8 @@ generic 3D Armor compatibility layer.
 - Hides empty slots and hides the whole HUD when no armor is equipped.
 - Uses the equipped `ItemStack`'s inventory image, so leather dyeing, armor
   trims, enchantment glints and third-party armor textures are preserved.
-- Shows a small durability bar inside the cell under every damageable armor piece.
+- Shows a small durability bar, centered inside the cell under every
+  damageable armor piece.
 - The bar uses Mineclonia's own `mcl_wear_bar.png` texture and wear-bar color
   gradient (green to yellow to red), matching the durability bars of items in
   inventories and the offhand HUD.
