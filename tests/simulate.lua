@@ -145,24 +145,24 @@ local function register_item(name, image, groups, extra)
 	core.registered_items[name] = def
 end
 
-register_item("test:helmet_iron", "mcl_armor_inv_helmet_iron.png",
+register_item("test:helmet_iron", "mcl_armor_inv_helmet_iron.png^[resize:128x128",
 	{ armor = 1, armor_head = 1, mcl_armor_uses = 165 }, { _mcl_armor_element = "head" })
-register_item("test:chest_iron", "mcl_armor_inv_chestplate_iron.png",
+register_item("test:chest_iron", "mcl_armor_inv_chestplate_iron.png^[resize:128x128",
 	{ armor = 1, armor_torso = 1, mcl_armor_uses = 241 }, { _mcl_armor_element = "torso" })
-register_item("test:legs_iron", "mcl_armor_inv_leggings_iron.png",
+register_item("test:legs_iron", "mcl_armor_inv_leggings_iron.png^[resize:128x128",
 	{ armor = 1, armor_legs = 1, mcl_armor_uses = 226 }, { _mcl_armor_element = "legs" })
-register_item("test:feet_iron", "mcl_armor_inv_boots_iron.png",
+register_item("test:feet_iron", "mcl_armor_inv_boots_iron.png^[resize:128x128",
 	{ armor = 1, armor_feet = 1, mcl_armor_uses = 196 }, { _mcl_armor_element = "feet" })
-register_item("test:helmet_diamond", "mcl_armor_inv_helmet_diamond.png",
+register_item("test:helmet_diamond", "mcl_armor_inv_helmet_diamond.png^[resize:128x128",
 	{ armor = 1, armor_head = 1, mcl_armor_uses = 364 }, { _mcl_armor_element = "head" })
-register_item("test:helmet_leather", "mcl_armor_inv_helmet_leather.png",
+register_item("test:helmet_leather", "mcl_armor_inv_helmet_leather.png^[resize:128x128",
 	{ armor = 1, armor_head = 1, armor_leather = 1, mcl_armor_uses = 56 },
 	{ _mcl_armor_element = "head" })
-register_item("test:helmet_thirdparty", "thirdparty_custom_helmet.png",
+register_item("test:helmet_thirdparty", "thirdparty_custom_helmet.png^[resize:128x128",
 	{ armor = 1, armor_head = 1, mcl_armor_uses = 77 }, { _mcl_armor_element = "head" })
-register_item("test:helmet_crown", "test_crown.png",
+register_item("test:helmet_crown", "test_crown.png^[resize:128x128",
 	{ armor = 1, armor_head = 1 }, { _mcl_armor_element = "head" })
-register_item("test:helmet_alias", "mcl_armor_inv_helmet_iron.png",
+register_item("test:helmet_alias", "mcl_armor_inv_helmet_iron.png^[resize:128x128",
 	{ armor = 1, armor_head = 1, mcl_armor_uses = 165 }, { _mcl_armor_element = "head" })
 register_item("test:helmet_iron_enchanted", "mcl_armor_inv_helmet_iron.png^[colorize:purple:50",
 	{ armor = 1, armor_head = 1, mcl_armor_uses = 165, enchanted = 1 },
@@ -260,6 +260,8 @@ end
 
 local function near(a, b) return math.abs(a - b) < 0.001 end
 
+local RESIZE = "^[resize:128x128"
+
 local function defaults()
 	return {
 		mcl_armor_hud_anchor = "left",
@@ -284,7 +286,7 @@ settings_values.mcl_armor_hud_anchor = " side "
 settings_values.mcl_armor_hud_blink_interval = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "left", "invalid anchor fallback")
-assert_eq(s.icon_scale, 2.5, "source-defined icon scale")
+assert_eq(s.icon_scale, 3, "source-defined icon scale")
 assert_eq(s.blink_interval, 200, "blink fallback")
 assert_eq(s.offset_x, 8, "source-defined horizontal offset")
 assert_eq(s.offset_y, 8, "source-defined vertical offset")
@@ -309,20 +311,21 @@ advance(0.02)
 assert_eq(count_hud(p), 4, "one piece has cell + icon + bar bg + bar fill")
 local cell
 for _, e in pairs(p.hud) do if e.z_index == 9 then cell = e end end
-assert_eq(cell.text, "mcl_offhand_slot.png", "Mineclonia inventory cell texture")
+assert_eq(cell.text, "mcl_offhand_slot.png^[resize:128x128", "Mineclonia inventory cell texture")
 assert_eq(cell.offset.x, 8, "cell left offset")
 assert_eq(cell.offset.y, -8, "cell bottom offset")
-assert_true(near(cell.scale.x, 50 / 22), "cell scaled to 50 px")
+assert_true(near(cell.scale.x, 0.46875), "cell scaled like mcl_offhand")
 local ic = icons(p)[1]
-assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png", "icon texture")
-assert_true(near(ic.e.offset.x, 13), "item centered in cell")
-assert_true(near(ic.e.offset.y, -13), "item bottom inside cell")
+assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "icon texture")
+assert_true(near(ic.e.offset.x, 14), "item centered in cell")
+assert_true(near(ic.e.offset.y, -14), "item bottom inside cell")
 assert_eq(ic.e.position.x, 0, "left anchor position")
+assert_true(near(ic.e.scale.x, 0.375), "item scaled like mcl_offhand")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
-assert_true(near(b[1].e.offset.x, 16.5), "bar centered in cell")
-assert_true(near(b[1].e.offset.y, -15.6667), "bar overlays lower item like offhand")
-assert_eq(b[2].e.scale.x, 33, "full bar fill")
+assert_true(near(b[1].e.offset.x, 18), "bar centered in cell")
+assert_true(near(b[1].e.offset.y, -17.5), "bar overlays lower item like offhand")
+assert_eq(b[2].e.scale.x, 40, "full bar fill")
 assert_eq(b[2].e.scale.y, 3, "offhand bar height")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
@@ -335,12 +338,12 @@ advance(0.02)
 assert_eq(count_hud(p), 16, "four pieces have sixteen elements")
 local is = icons(p)
 assert_eq(#is, 4, "four icons")
-assert_true(near(is[1].e.offset.x, 13), "head x")
-assert_true(near(is[2].e.offset.x, 67), "torso x")
-assert_true(near(is[3].e.offset.x, 121), "legs x")
-assert_true(near(is[4].e.offset.x, 175), "feet x")
-assert_eq(is[1].e.text, "mcl_armor_inv_helmet_iron.png", "head texture")
-assert_eq(is[4].e.text, "mcl_armor_inv_boots_iron.png", "feet texture")
+assert_true(near(is[1].e.offset.x, 14), "head x")
+assert_true(near(is[2].e.offset.x, 78), "torso x")
+assert_true(near(is[3].e.offset.x, 142), "legs x")
+assert_true(near(is[4].e.offset.x, 206), "feet x")
+assert_eq(is[1].e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "head texture")
+assert_eq(is[4].e.text, "mcl_armor_inv_boots_iron.png^[resize:128x128", "feet texture")
 print("ok all four pieces")
 
 -- Removal and reflow.
@@ -350,8 +353,8 @@ advance(0.02)
 assert_eq(count_hud(p), 8, "two remaining pieces")
 is = icons(p)
 assert_eq(#is, 2, "two icons after removals")
-assert_true(near(is[1].e.offset.x, 13), "first remaining icon reflows")
-assert_eq(is[1].e.text, "mcl_armor_inv_leggings_iron.png", "legs is first")
+assert_true(near(is[1].e.offset.x, 14), "first remaining icon reflows")
+assert_eq(is[1].e.text, "mcl_armor_inv_leggings_iron.png^[resize:128x128", "legs is first")
 unequip(p, "legs")
 unequip(p, "feet")
 advance(0.02)
@@ -369,7 +372,7 @@ advance(0.02)
 assert_eq(count_hud(p), 4, "still four elements")
 for id in pairs(p.hud) do assert_true(old_ids[id], "existing id reused") end
 assert_eq(#p.hud_adds, 0, "no recreation for material change")
-assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_leather.png", "new texture")
+assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_leather.png^[resize:128x128", "new texture")
 print("ok material change")
 
 -- Durability polling and threshold colours.
@@ -378,43 +381,43 @@ equip(p, "torso", "test:chest_iron", 0)
 advance(0.02)
 local fill_id
 for id, e in pairs(p.hud) do if e.z_index == 12 then fill_id = id end end
-assert_eq(p.hud[fill_id].scale.x, 33, "full torso bar")
+assert_eq(p.hud[fill_id].scale.x, 40, "full torso bar")
 set_wear(p, "torso", 32768)
 advance(0.6)
-assert_eq(p.hud[fill_id].scale.x, 17, "half torso bar after polling")
+assert_eq(p.hud[fill_id].scale.x, 20, "half torso bar after polling")
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ffc900",
 	"Mineclonia yellow wear color at half durability")
 set_wear(p, "torso", math.floor(65536 * 0.75))
 advance(0.6)
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ff3300",
 	"Mineclonia orange wear color")
-assert_eq(p.hud[fill_id].scale.x, 8, "quarter fill width")
+assert_eq(p.hud[fill_id].scale.x, 10, "quarter fill width")
 print("ok durability and wear-bar gradient")
 
 -- Critical blink.
 equip(p, "head", "test:helmet_diamond", 0)
 set_wear(p, "torso", 59000)
 advance(0.02)
-assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical visible initially")
+assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128", "critical visible initially")
 advance(0.21)
-assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png", "non-critical unaffected")
+assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png^[resize:128x128", "non-critical unaffected")
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if near(e.offset.x, 70.5) and e.z_index == 11 then
+	if near(e.offset.x, 82) and e.z_index == 11 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
-	elseif near(e.offset.x, 70.5) and e.z_index == 12 then
+	elseif near(e.offset.x, 82) and e.z_index == 12 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
-		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
+		assert_eq(e.scale.x, 4, "critical bar fill keeps its width")
 		visible_bars = visible_bars + 1
 	end
 end
 assert_eq(visible_bars, 2, "both critical bar elements stay visible")
 advance(0.21)
-assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical icon restored")
+assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128", "critical icon restored")
 print("ok critical icon blink without hiding the bar")
 
 -- Multiplayer isolation.
@@ -427,13 +430,13 @@ equip(q, "feet", "test:feet_iron", 0)
 advance(0.02)
 advance(0.21)
 for _, e in pairs(p.hud) do
-	if e.z_index == 10 and near(e.offset.x, 67) then
+	if e.z_index == 10 and near(e.offset.x, 78) then
 		assert_eq(e.text, "", "alice critical hidden")
 	end
 end
 for _, e in pairs(q.hud) do
-	if e.z_index == 10 and near(e.offset.x, 67) then
-		assert_eq(e.text, "mcl_armor_inv_chestplate_iron.png", "bob unaffected")
+	if e.z_index == 10 and near(e.offset.x, 78) then
+		assert_eq(e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128", "bob unaffected")
 	end
 end
 local alice_ids = {}
@@ -447,7 +450,7 @@ advance(0.02)
 equip(r, "head", "test:helmet_crown", 0)
 advance(0.02)
 assert_eq(count_hud(r), 4, "unbreakable element record")
-assert_eq(icons(r)[1].e.text, "test_crown.png", "crown icon")
+assert_eq(icons(r)[1].e.text, "test_crown.png^[resize:128x128", "crown icon")
 for _, e in pairs(r.hud) do
 	if e.z_index == 11 or e.z_index == 12 then
 		assert_eq(e.text, "", "no bar for unbreakable armor")
@@ -455,18 +458,18 @@ for _, e in pairs(r.hud) do
 end
 equip(r, "head", "test:helmet_thirdparty", 0)
 advance(0.02)
-assert_eq(icons(r)[1].e.text, "thirdparty_custom_helmet.png", "third-party texture")
+assert_eq(icons(r)[1].e.text, "thirdparty_custom_helmet.png^[resize:128x128", "third-party texture")
 equip(r, "head", "test:helmet_oldname", 0)
 advance(0.02)
-assert_eq(icons(r)[1].e.text, "mcl_armor_inv_helmet_iron.png", "alias texture")
+assert_eq(icons(r)[1].e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "alias texture")
 local leather = "mcl_armor_inv_helmet_leather_desat.png^[multiply:#ff0000"
 equip(r, "head", "test:helmet_leather", 0, { ["inventory_image"] = leather })
 advance(0.02)
-assert_eq(icons(r)[1].e.text, leather, "leather meta texture")
+assert_eq(icons(r)[1].e.text, leather .. RESIZE, "leather meta texture")
 local trim = "mcl_armor_inv_helmet_iron.png^(helmet_trim.png^[colorize:#5faed8:150)"
 equip(r, "head", "test:helmet_iron", 0, { ["inventory_image"] = trim })
 advance(0.02)
-assert_eq(icons(r)[1].e.text, trim, "trim meta texture")
+assert_eq(icons(r)[1].e.text, trim .. RESIZE, "trim meta texture")
 equip(r, "head", "test:helmet_iron_enchanted", 0, { ["inventory_image"] = trim })
 advance(0.02)
 assert_true(icons(r)[1].e.text:find(mcl_enchanting.overlay, 1, true) ~= nil,
@@ -474,7 +477,7 @@ assert_true(icons(r)[1].e.text:find(mcl_enchanting.overlay, 1, true) ~= nil,
 local already = trim .. mcl_enchanting.overlay
 equip(r, "head", "test:helmet_iron_enchanted", 0, { ["inventory_image"] = already })
 advance(0.02)
-assert_eq(icons(r)[1].e.text, already, "glint not duplicated")
+assert_eq(icons(r)[1].e.text, already .. RESIZE, "glint not duplicated")
 print("ok third-party and special appearances")
 
 -- Diffing: stable HUD produces no hud_change calls.
@@ -525,10 +528,10 @@ equip(c, "torso", "test:chest_iron", 0)
 advance(0.02)
 is = icons(c)
 assert_eq(is[1].e.position.x, 0.5, "center position")
-assert_true(near(is[1].e.offset.x, -37), "center first x")
-assert_true(near(is[2].e.offset.x, 17), "center second x")
-assert_true(near(is[1].e.offset.y, -25), "custom vertical offset")
-assert_true(near(bar_elements(c)[1].e.offset.y, -27.6667), "custom bar vertical offset")
+assert_true(near(is[1].e.offset.x, -46), "center first x")
+assert_true(near(is[2].e.offset.x, 18), "center second x")
+assert_true(near(is[1].e.offset.y, -26), "custom vertical offset")
+assert_true(near(bar_elements(c)[1].e.offset.y, -29.5), "custom bar vertical offset")
 print("ok center positioning")
 
 settings_values = defaults()
@@ -543,8 +546,8 @@ equip(rr, "torso", "test:chest_iron", 0)
 advance(0.02)
 is = icons(rr)
 assert_eq(is[1].e.position.x, 1, "right position")
-assert_true(near(is[1].e.offset.x, -109), "right first x")
-assert_true(near(is[2].e.offset.x, -55), "right second x")
+assert_true(near(is[1].e.offset.x, -128), "right first x")
+assert_true(near(is[2].e.offset.x, -64), "right second x")
 print("ok right positioning")
 
 print("\nALL SIMULATED TESTS PASSED")
