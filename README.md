@@ -14,8 +14,9 @@ generic 3D Armor compatibility layer.
 - Uses the equipped `ItemStack`'s inventory image, so leather dyeing, armor
   trims, enchantment glints and third-party armor textures are preserved.
 - Shows a small durability bar under every damageable armor piece.
-- Green/yellow/red durability states with configurable warning and critical
-  thresholds.
+- The bar uses Mineclonia's own wear-bar color gradient (green to yellow to
+  red), matching the durability bars of items in inventories and the offhand
+  HUD.
 - When a piece becomes critical, its icon blinks while its durability bar
   stays visible. Other pieces keep their normal appearance.
 - Independent state for every player: HUD element IDs, durability and blink
@@ -82,8 +83,7 @@ of `src/settings.lua` to change them:
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `offset_y` | `8` | Pixels above the bottom of the screen. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
-| `warning_threshold` | `25` | Percentage at or below which the bar turns yellow. |
-| `critical_threshold` | `10` | Percentage at or below which the icon blinks and the bar turns red. |
+| `critical_threshold` | `10` | Percentage at or below which the icon blinks. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
 
 Validation rules:
@@ -91,8 +91,6 @@ Validation rules:
 - Unknown anchors fall back to `left`.
 - `icon_scale` and `blink_interval` are clamped to the ranges declared in
   `settingtypes.txt`.
-- If the source-defined critical threshold is greater than the warning
-  threshold, it is clamped to the warning threshold.
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The group is left-aligned,
@@ -110,7 +108,9 @@ information.
 `src/durability.lua` uses `mcl_util.calculate_durability(stack)` for maximum
 uses (including Unbreaking) and the engine's 0..65535 wear value for the
 remaining fraction. The formula matches Mineclonia's own elytra durability
-check: `remaining = (65536 - wear) * max_uses / 65536`.
+check: `remaining = (65536 - wear) * max_uses / 65536`. The bar color is
+computed from the same wear value with the exact gradient Luanti uses for item
+durability bars and Mineclonia uses for its offhand wear bar.
 
 `src/settings.lua` reads the three user settings and holds the remaining
 layout, threshold and polling values as editable source constants.
@@ -163,8 +163,8 @@ find . -name '*.lua' -print0 | xargs -0 -n1 luac -p
 
 The standalone test harness stubs `core`, `mcl_armor`, `mcl_util` and
 `mcl_enchanting`, loads the modules from `src/`, and simulates player joins,
-armor changes, aliases, durability loss, warning/critical thresholds, critical
-blinking, multiple players, disconnects, death/respawn and third-party armor.
+armor changes, aliases, durability loss, wear-bar colors, critical blinking,
+multiple players, disconnects, death/respawn and third-party armor.
 It checks the generated HUD calls and per-player state isolation without
 starting a server:
 

@@ -58,9 +58,13 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`.
   (z=10), bar fill (z=11). `type="image"`, `position={x=pos_x,y=1}`,
   `alignment={x=1,y=-1}`. With y=-1 the element's bottom edge is at
   `position.y + offset.y`; with x=1 it starts at the left edge of the anchor.
-  `scale=1` renders a 16x16 texture at native size. Bar colors: normal
-  `#55c14f`, warning `#e0b020`, critical `#d9363e`; bar background
-  `#1b1b1b`; fill width = `round(bar_width * fraction)`.
+  `scale=1` renders a 16x16 texture at native size. Bar color uses Mineclonia's
+  wear-bar gradient (`src/player.lua:16`): `wear_i =
+  min(floor(wear / 65535 * 600) + 10, 511)`; if `wear_i <= 255` color is
+  `(wear_i, 255, 0)` (green→yellow), else `(255, 511 - wear_i, 0)`
+  (yellow→red). This matches Luanti's `drawItemStack.cpp` and Mineclonia's
+  `mcl_offhand/init.lua`. Bar background `#1b1b1b`; fill width =
+  `round(bar_width * fraction)`.
 - Critical blink (`src/player.lua:84`): time between visibility *flips* is
   `blink_interval` ms (full cycle = 2x). Only the icon is hidden; both bar
   elements stay visible. The phase resets when a piece first becomes critical.
@@ -87,8 +91,8 @@ and range bounds.
 
 All other values live in the `VALUES` table at `src/settings.lua:3` and are
 **not** settings: `offset_x=8`, `offset_y=8`, `icon_spacing=4`,
-`warning_threshold=25`, `critical_threshold=10`, `poll_interval=0.5`.
-If critical > warning it is clamped with a log warning. Layout uses
+`critical_threshold=10` (blink only), `poll_interval=0.5`.
+Layout uses
 `icon_px = 16 * icon_scale`, `step = icon_px + icon_spacing`,
 `bar_width = round(icon_px)`, `bar_height = max(2, round(icon_px/8))`,
 `gap = max(1, round(icon_px/16))`, `icon_y = -(offset_y + bar_height + gap)`,
@@ -108,6 +112,8 @@ positive moves right. Edit `README.md` if this table changes.
 - Test pitfalls: wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
   advance `0.51` s per blink flip to avoid float boundary at exactly `0.5`.
+  Expected gradient colors: wear 0 → `#0aff00`, 32768 → `#ffc900`,
+  49152 → `#ff3300`, 59000 → `#ff0000`.
 - Headless load: world at `/tmp/opencode/armor_hud_world` with `world.mt`:
   `gameid = mineclonia`, sqlite3 backends, `load_mod_mcl_armor_hud = true`.
   Run `timeout 12s luanti --server --world /tmp/opencode/armor_hud_world
@@ -126,7 +132,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before this file: `ff4c544`, clean tree.
+  commit unless asked. Current HEAD before the wear-bar gradient change:
+  `6063840`, clean tree.
 - History note: an inventory-cell redesign was committed once and then
   discarded by an external `git reset` to `bfa374f`; the current code is the
   simple icon + durability-bar design. Do not assume those cell commits exist.
