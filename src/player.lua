@@ -9,6 +9,13 @@ local hud
 local states = {}
 local poll_elapsed = 0
 
+-- Geometry used by mcl_offhand: 60 px cell, 48 px item, 40x3 bar. Its bar
+-- center is 19 px below the cell center (slot offset -32, bar offset -13).
+local OFFHAND_CELL_PX = 60
+local OFFHAND_BAR_W = 40
+local OFFHAND_BAR_H = 3
+local OFFHAND_BAR_CENTER_DY = 19
+
 -- Same green -> yellow -> red gradient as Mineclonia's inventory wear bars and
 -- its offhand HUD bar (Luanti's default durability bar colors).
 local function wear_bar_color(wear)
@@ -70,8 +77,11 @@ local function layout(piece_count)
 		start_x = settings.offset_x
 	end
 
-	local bar_width = math.max(1, math.floor(cell_px * 2 / 3 + 0.5))
-	local bar_height = math.max(2, math.floor(cell_px / 20 + 0.5))
+	local offhand_scale = cell_px / OFFHAND_CELL_PX
+	local bar_width = math.max(1, math.floor(OFFHAND_BAR_W * offhand_scale + 0.5))
+	local bar_height = math.max(1, math.floor(OFFHAND_BAR_H * offhand_scale + 0.5))
+	local bar_center_from_cell_bottom = cell_px / 2 -
+		OFFHAND_BAR_CENTER_DY * offhand_scale
 
 	return {
 		pos_x = pos_x,
@@ -83,7 +93,8 @@ local function layout(piece_count)
 		bar_height = bar_height,
 		cell_y = -settings.offset_y,
 		icon_y = -(settings.offset_y + inset),
-		bar_y = -(settings.offset_y + inset + bar_height),
+		bar_y = -(settings.offset_y + bar_center_from_cell_bottom +
+			bar_height / 2),
 	}
 end
 
