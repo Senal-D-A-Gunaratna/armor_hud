@@ -9,17 +9,18 @@ local hud
 local states = {}
 local poll_elapsed = 0
 
-local BAR_NORMAL = "#55c14f"
-local BAR_WARNING = "#e0b020"
-local BAR_CRITICAL = "#d9363e"
-
-local function bar_color(percent)
-	if percent <= settings.critical_threshold then
-		return BAR_CRITICAL
-	elseif percent <= settings.warning_threshold then
-		return BAR_WARNING
+-- Same green -> yellow -> red gradient as Mineclonia's inventory wear bars and
+-- its offhand HUD bar (Luanti's default durability bar colors).
+local function wear_bar_color(wear)
+	local wear_i = math.min(math.floor((wear / 65535) * 600), 511)
+	wear_i = math.min(wear_i + 10, 511)
+	local r, g
+	if wear_i <= 255 then
+		r, g = wear_i, 255
+	else
+		r, g = 255, 511 - wear_i
 	end
-	return BAR_NORMAL
+	return string.format("#%02x%02x00", r, g)
 end
 
 local function get_state(player)
@@ -127,10 +128,10 @@ local function refresh(player, state)
 		end
 
 		local fill_px = 0
-		local color = BAR_NORMAL
+		local color
 		if d then
 			fill_px = math.floor(l.bar_width * d.fraction + 0.5)
-			color = bar_color(d.percent)
+			color = wear_bar_color(d.wear)
 		end
 
 		local p = {
