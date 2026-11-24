@@ -264,7 +264,7 @@ local function defaults()
 	return {
 		mcl_armor_hud_anchor = "left",
 		mcl_armor_hud_icon_scale = "1.0",
-		mcl_armor_hud_blink_interval = "500",
+		mcl_armor_hud_blink_interval = "200",
 	}
 end
 
@@ -287,7 +287,7 @@ settings_values.mcl_armor_hud_blink_interval = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.anchor, "left", "invalid anchor fallback")
 assert_eq(s.icon_scale, 4, "icon scale clamped")
-assert_eq(s.blink_interval, 500, "blink fallback")
+assert_eq(s.blink_interval, 200, "blink fallback")
 assert_eq(s.offset_x, 8, "source-defined horizontal offset")
 assert_eq(s.offset_y, 8, "source-defined vertical offset")
 assert_eq(s.icon_spacing, 4, "source-defined spacing")
@@ -391,7 +391,7 @@ equip(p, "head", "test:helmet_diamond", 0)
 set_wear(p, "torso", 59000)
 advance(0.02)
 assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical visible initially")
-advance(0.51)
+advance(0.21)
 assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png", "non-critical unaffected")
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
@@ -408,7 +408,7 @@ for _, e in pairs(p.hud) do
 	end
 end
 assert_eq(visible_bars, 2, "both critical bar elements stay visible")
-advance(0.51)
+advance(0.21)
 assert_eq(icons(p)[2].e.text, "mcl_armor_inv_chestplate_iron.png", "critical icon restored")
 print("ok critical icon blink without hiding the bar")
 
@@ -420,7 +420,7 @@ equip(q, "torso", "test:chest_iron", 0)
 equip(q, "legs", "test:legs_iron", 0)
 equip(q, "feet", "test:feet_iron", 0)
 advance(0.02)
-advance(0.51)
+advance(0.21)
 for _, e in pairs(p.hud) do
 	if e.z_index == 12 and e.offset.x == 28 then
 		assert_eq(e.text, "", "alice critical hidden")
