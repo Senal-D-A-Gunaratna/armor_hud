@@ -313,20 +313,20 @@ assert_eq(count_hud(p), 4, "one piece has cell + icon + bar bg + bar fill")
 local cell
 for _, e in pairs(p.hud) do if e.z_index == 9 then cell = e end end
 assert_eq(cell.text, "mcl_offhand_slot.png^[resize:128x128", "Mineclonia inventory cell texture")
-assert_true(near(cell.offset.x, -286), "cell beside offhand slot")
-assert_true(near(cell.offset.y, -9.5), "cell bottom when centered with offhand slot")
-assert_true(near(cell.offset.y - 45 / 2, -32), "cell center matches offhand slot")
+assert_true(near(cell.offset.x, -516), "cell beside offhand slot")
+assert_true(near(cell.offset.y, 0), "cell bottom flush with screen bottom")
+assert_true(near(cell.offset.y - 45 / 2, -22.5), "cell center for flush bottom")
 assert_true(near(cell.scale.x, 0.3515625), "cell scaled to three quarters of mcl_offhand")
 local ic = icons(p)[1]
 assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "icon texture")
-assert_true(near(ic.e.offset.x, -281.5), "item centered in cell")
-assert_true(near(ic.e.offset.y, -14), "item bottom inside cell")
+assert_true(near(ic.e.offset.x, -511.5), "item centered in cell")
+assert_true(near(ic.e.offset.y, -4.5), "item bottom inside cell")
 assert_eq(ic.e.position.x, 0.5, "offhand anchor position")
 assert_true(near(ic.e.scale.x, 0.28125), "item scaled like mcl_offhand")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
-assert_true(near(b[1].e.offset.x, -278.5), "bar centered in cell")
-assert_true(near(b[1].e.offset.y, -16.75), "bar overlays lower item like offhand")
+assert_true(near(b[1].e.offset.x, -508.5), "bar centered in cell")
+assert_true(near(b[1].e.offset.y, -7.25), "bar overlays lower item like offhand")
 assert_eq(b[2].e.scale.x, 30, "full bar fill")
 assert_eq(b[2].e.scale.y, 2, "scaled offhand bar height")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
@@ -339,12 +339,12 @@ p.inv:set_stack("offhand", 1, Stack.new("test:offhand"))
 advance(0.6)
 local shifted_cell
 for _, e in pairs(p.hud) do if e.z_index == 9 then shifted_cell = e end end
-assert_true(near(shifted_cell.offset.x, -350), "offhand HUD shifts armor HUD left")
+assert_true(near(shifted_cell.offset.x, -580), "offhand HUD shifts armor HUD left")
 p.inv:set_stack("offhand", 1, Stack.new(""))
 advance(0.6)
 local restored_cell
 for _, e in pairs(p.hud) do if e.z_index == 9 then restored_cell = e end end
-assert_true(near(restored_cell.offset.x, -286), "armor HUD returns when offhand is hidden")
+assert_true(near(restored_cell.offset.x, -516), "armor HUD returns when offhand is hidden")
 print("ok offhand visibility shift")
 
 -- All four pieces.
@@ -355,10 +355,10 @@ advance(0.02)
 assert_eq(count_hud(p), 16, "four pieces have sixteen elements")
 local is = icons(p)
 assert_eq(#is, 4, "four icons")
-assert_true(near(is[1].e.offset.x, -281.5), "head x")
-assert_true(near(is[2].e.offset.x, -232.5), "torso x")
-assert_true(near(is[3].e.offset.x, -183.5), "legs x")
-assert_true(near(is[4].e.offset.x, -134.5), "feet x")
+assert_true(near(is[1].e.offset.x, -511.5), "head x")
+assert_true(near(is[2].e.offset.x, -462.5), "torso x")
+assert_true(near(is[3].e.offset.x, -413.5), "legs x")
+assert_true(near(is[4].e.offset.x, -364.5), "feet x")
 assert_eq(is[1].e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "head texture")
 assert_eq(is[4].e.text, "mcl_armor_inv_boots_iron.png^[resize:128x128", "feet texture")
 print("ok all four pieces")
@@ -370,7 +370,7 @@ advance(0.02)
 assert_eq(count_hud(p), 8, "two remaining pieces")
 is = icons(p)
 assert_eq(#is, 2, "two icons after removals")
-assert_true(near(is[1].e.offset.x, -281.5), "first remaining icon reflows")
+assert_true(near(is[1].e.offset.x, -511.5), "first remaining icon reflows")
 assert_eq(is[1].e.text, "mcl_armor_inv_leggings_iron.png^[resize:128x128", "legs is first")
 unequip(p, "legs")
 unequip(p, "feet")
@@ -421,11 +421,11 @@ assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png^[resize:128x128"
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if near(e.offset.x, -229.5) and e.z_index == 11 then
+	if near(e.offset.x, -459.5) and e.z_index == 11 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
-	elseif near(e.offset.x, -229.5) and e.z_index == 12 then
+	elseif near(e.offset.x, -459.5) and e.z_index == 12 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
 		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
@@ -447,12 +447,12 @@ equip(q, "feet", "test:feet_iron", 0)
 advance(0.02)
 advance(0.21)
 for _, e in pairs(p.hud) do
-	if e.z_index == 10 and near(e.offset.x, -232.5) then
+	if e.z_index == 10 and near(e.offset.x, -462.5) then
 		assert_eq(e.text, "", "alice critical hidden")
 	end
 end
 for _, e in pairs(q.hud) do
-	if e.z_index == 10 and near(e.offset.x, -232.5) then
+	if e.z_index == 10 and near(e.offset.x, -462.5) then
 		assert_eq(e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128", "bob unaffected")
 	end
 end
