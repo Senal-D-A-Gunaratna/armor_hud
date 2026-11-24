@@ -83,7 +83,7 @@ of `src/settings.lua` to change them:
 
 | Value | Default | Description |
 |---|---:|---|
-| `icon_scale` | `3.0` | Exact `mcl_offhand` size: 60x60 px cells with 48 px items. |
+| `icon_scale` | `2.25` | 45x45 px cells with 36 px items: three quarters of the `mcl_offhand` size. |
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `offset_y` | `2` | Pixels above the bottom of the screen, matching `mcl_offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
@@ -156,7 +156,8 @@ Mineclonia release.
   if you installed it from a release archive).
 - The HUD is server-side and uses image elements. It renders the cell and item
   exactly like `mcl_offhand`: both textures are resized to 128x128, then drawn
-  with scales 0.46875 and 0.375 (60 px cell, 48 px item, 40x3 bar).
+  with scales 0.46875 and 0.375, then renders them at three-quarters size
+  (45 px cell, 36 px item, 30x2 bar).
 - Large offsets can place the HUD off-screen; the mod does not measure the
   player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
