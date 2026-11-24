@@ -322,7 +322,7 @@ assert_eq(ic.e.offset.y, -12, "item bottom inside cell")
 assert_eq(ic.e.position.x, 0, "left anchor position")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
-assert_eq(b[1].e.offset.x, 12, "bar x")
+assert_true(near(b[1].e.offset.x, 14.5), "bar centered in cell")
 assert_eq(b[1].e.offset.y, -14, "bar inside cell bottom")
 assert_eq(b[2].e.scale.x, 27, "full bar fill")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
@@ -402,11 +402,11 @@ assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png", "non-critical 
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if e.offset.x == 56 and e.z_index == 11 then
+	if near(e.offset.x, 58.5) and e.z_index == 11 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
-	elseif e.offset.x == 56 and e.z_index == 12 then
+	elseif near(e.offset.x, 58.5) and e.z_index == 12 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
 		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
