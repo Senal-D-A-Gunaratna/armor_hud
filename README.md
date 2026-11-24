@@ -94,11 +94,13 @@ Validation rules:
 - `blink_interval` is clamped to the range declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
-Only visible (equipped) pieces are laid out. The default `offhand` anchor puts
-the group immediately to the right of the `mcl_offhand` slot and centers each
-smaller armor cell on the offhand slot. `left`, `center` and `right` remain available; for those anchors,
-positive horizontal offsets move the group right, except for `right`, where
-they move it left. `offset_x` and `offset_y` are ignored by the `offhand` anchor.
+Only visible (equipped) pieces are laid out. The default `offhand` anchor uses
+a fixed x (currently `-516` from screen center, `64` px to the left when an
+offhand item makes the offhand HUD appear). Its bottom edge is flush with the
+screen bottom; edit `ARMOR_HUD_BOTTOM_GAP` in `src/player.lua` to add a gap.
+`left`, `center` and `right` remain available; for those anchors, positive
+horizontal offsets move the group right, except for `right`, where they move it
+left. `offset_x` and `offset_y` are ignored by the `offhand` anchor.
 
 ## How it works
 

@@ -113,12 +113,11 @@ quarters of the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
 `bar_center_from_cell_bottom = cell_px/2 - 19 * cell_px/60`,
 `bar_y = cell_y - (bar_center_from_cell_bottom - bar_height/2)`. The bar
 overlays the lower part of the item, as in `mcl_offhand`.
-`offhand` anchor: group left edge is `OFFHAND_SLOT_X + 30 + 4 = -286` from
-screen center while the offhand HUD is hidden, and shifts left by
-`OFFHAND_CELL_PX + OFFHAND_SLOT_GAP = 64` px to `-350` when an offhand item is
-present; each cell is centered on the offhand slot
-(`cell_y = OFFHAND_SLOT_Y + cell_px/2 = -9.5`); `offset_x` and `offset_y` are
-ignored. Right anchor: positive `offset_x` moves
+`offhand` anchor: group left edge is `OFFHAND_SLOT_X + 30 + 4` from screen
+center while the offhand HUD is hidden (currently `-516`), and shifts left by
+`OFFHAND_CELL_PX + OFFHAND_SLOT_GAP = 64` px when an offhand item is present.
+`cell_y = -ARMOR_HUD_BOTTOM_GAP` (default 0, flush with the screen bottom);
+`offset_x` and `offset_y` are ignored. Right anchor: positive `offset_x` moves
 left; center/left: positive moves right. Edit `README.md` if this table changes.
 
 ## Testing
@@ -132,8 +131,8 @@ left; center/left: positive moves right. Edit `README.md` if this table changes.
   all four anchors and the offhand-visibility shift. To test non-configurable offsets, mutate the returned
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
 - Test pitfalls: the default anchor is `offhand`, with the first cell at
-  x=-286 from screen center (or -350 while an offhand item is present) and cell
-  center y=-32 (cell bottom y=-9.5); the default cell is 45 px with a 36 px item and a 30x2 bar;
+  x=-516 from screen center (or -580 while an offhand item is present) and cell
+  bottom y=0 (cell center y=-22.5); the default cell is 45 px with a 36 px item and a 30x2 bar;
   cell texture is `mcl_offhand_slot.png^[resize:128x128`, item textures get the
   same suffix, HUD scales are 0.3515625/0.28125, and `icon_scale` is
   source-defined (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
@@ -160,8 +159,8 @@ left; center/left: positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the offhand-visibility shift:
-  `cff7a32`, clean tree.
+  commit unless asked. Current HEAD before bottom-flush Y:
+  `80f750e`, clean tree.
 - History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
   discarded by an external `git reset`; the current cell uses
   `mcl_offhand_slot.png` like `mcl_offhand`.
