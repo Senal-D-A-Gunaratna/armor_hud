@@ -29,7 +29,8 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   order using `mcl_armor.elements[slot].index` (2,3,4,5); resolves aliases,
   item definitions and per-stack textures.
 - `src/durability.lua`: durability math from wear and `mcl_armor_uses`.
-- `src/hud.lua`: image HUD elements, diffed updates, visibility toggles.
+- `src/hud.lua`: image HUD elements (cell background, item, bar bg/fill), diffed
+  updates, visibility toggles.
 - `src/player.lua`: per-player state, layout, blink, lifecycle, polling.
 - `tests/simulate.lua`: standalone LuaJIT simulation harness.
 - `README.md`, `settingtypes.txt`, `mod.conf`: user-facing docs/metadata.
@@ -54,8 +55,10 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   `fraction = clamp(65536 - wear, 0, 65536) / 65536`;
   `percent = fraction * 100`; `remaining_uses = floor(remaining_wear *
   max_uses / 65536)`.
-- HUD elements (`src/hud.lua`): three per piece — icon (z=12), bar background
-  (z=10), bar fill (z=11). `type="image"`, `position={x=pos_x,y=1}`,
+- HUD elements (`src/hud.lua`): four per piece — cell background (z=9,
+  `mcl_offhand_slot.png`), item icon (z=10), bar background (z=11), bar fill
+  (z=12). The cell texture is 22x22 px scaled to `cell_px`; item is centered
+  with `inset` padding; the bar sits just below the item, inside the cell. `type="image"`, `position={x=pos_x,y=1}`,
   `alignment={x=1,y=-1}`. With y=-1 the element's bottom edge is at
   `position.y + offset.y`; with x=1 it starts at the left edge of the anchor.
   `scale=1` renders a 16x16 texture at native size. Bar color uses Mineclonia's
@@ -95,10 +98,11 @@ All other values live in the `VALUES` table at `src/settings.lua:3` and are
 **not** settings: `offset_x=8`, `offset_y=8`, `icon_spacing=4`,
 `critical_threshold=10` (blink only), `poll_interval=0.5`.
 Layout uses
-`icon_px = 16 * icon_scale`, `step = icon_px + icon_spacing`,
-`bar_width = round(icon_px)`, `bar_height = max(2, round(icon_px/8))`,
-`gap = max(1, round(icon_px/16))`, `icon_y = -(offset_y + bar_height + gap)`,
-`bar_y = -offset_y`. Right anchor: positive `offset_x` moves left; center/left:
+`icon_px = 16 * icon_scale`, `cell_px = icon_px / 0.8` (same 48:60 proportion
+as `mcl_offhand`), `inset = (cell_px - icon_px)/2`,
+`step = cell_px + icon_spacing`, `bar_width = round(cell_px * 2/3)`,
+`bar_height = max(2, round(cell_px/20))`, `cell_y = -offset_y`,
+`icon_y = -(offset_y + inset)`, `bar_y = -(offset_y + inset + bar_height)`. Right anchor: positive `offset_x` moves left; center/left:
 positive moves right. Edit `README.md` if this table changes.
 
 ## Testing
@@ -111,7 +115,8 @@ positive moves right. Edit `README.md` if this table changes.
   blink with bar still visible, per-player isolation, diffing, lifecycle and
   all three anchors. To test non-configurable offsets, mutate the returned
   config table after `load_mod()` (e.g. `cfg.offset_x = 10`).
-- Test pitfalls: wear `59000` for critical (the rounded 10% boundary is
+- Test pitfalls: a one-piece HUD has 4 elements; the cell uses z=9 and the
+  item/bar use z=10/11/12. Wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
   advance `0.21` s per blink flip to avoid float boundary at exactly `0.2`.
   Expected gradient colors: wear 0 → `#0aff00`, 32768 → `#ffc900`,
@@ -134,8 +139,8 @@ positive moves right. Edit `README.md` if this table changes.
   dir out of `mods/`; merely renaming it inside `mods/` still triggers
   `Mod name conflict detected`.
 - Commit each logical step separately when the user asks for commits; do not
-  commit unless asked. Current HEAD before the no-media change:
-  `b51719c`, clean tree.
-- History note: an inventory-cell redesign was committed once and then
-  discarded by an external `git reset` to `bfa374f`; the current code is the
-  simple icon + durability-bar design. Do not assume those cell commits exist.
+  commit unless asked. Current HEAD before the inventory-cell change:
+  `90f9fe2`, clean tree.
+- History note: an earlier cell redesign using `mcl_formspec_itemslot.png` was
+  discarded by an external `git reset`; the current cell uses
+  `mcl_offhand_slot.png` like `mcl_offhand`.

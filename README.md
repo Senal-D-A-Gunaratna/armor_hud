@@ -10,10 +10,12 @@ generic 3D Armor compatibility layer.
 ## Features
 
 - Shows the four equipped armor pieces in head, torso, legs, boots order.
+- Each piece is wrapped in an inventory cell using Mineclonia's own
+  `mcl_offhand_slot.png` texture, the same slot the offhand HUD uses.
 - Hides empty slots and hides the whole HUD when no armor is equipped.
 - Uses the equipped `ItemStack`'s inventory image, so leather dyeing, armor
   trims, enchantment glints and third-party armor textures are preserved.
-- Shows a small durability bar under every damageable armor piece.
+- Shows a small durability bar inside the cell under every damageable armor piece.
 - The bar uses Mineclonia's own `mcl_wear_bar.png` texture and wear-bar color
   gradient (green to yellow to red), matching the durability bars of items in
   inventories and the offhand HUD.
@@ -71,7 +73,7 @@ editable values in `src/settings.lua`, not by user settings.
 | `mcl_armor_hud_anchor` | `left` | Horizontal anchor: `left`, `center` or `right`. |
 | `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `mcl_armor_hud_offset_y` | `8` | Pixels above the bottom of the screen. |
-| `mcl_armor_hud_icon_scale` | `2.0` | Scale of the armor icons and bars (1.0 = 16x16 px icons). |
+| `mcl_armor_hud_icon_scale` | `2.0` | Scale of armor cells and items. At 1.0: 16x16 px item in a 20x20 px cell. |
 | `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source
@@ -116,9 +118,10 @@ durability bars and Mineclonia uses for its offhand wear bar.
 `src/settings.lua` reads the three user settings and holds the remaining
 layout, threshold and polling values as editable source constants.
 
-`src/hud.lua` manages image HUD elements per armor slot. Each piece has an icon,
-a bar background and a bar fill. `src/player.lua` owns all per-player state and
-lifecycle handling:
+`src/hud.lua` manages image HUD elements per armor slot. Each piece has four
+elements: the Mineclonia inventory-cell background, the full-size item image,
+a bar background and a bar fill below it, inside the cell. `src/player.lua`
+owns all per-player state and lifecycle handling:
 
 - join: create state and refresh;
 - armor inventory action: mark dirty and refresh on the next server step;
@@ -147,8 +150,9 @@ Mineclonia release.
 - Settings require a server restart to take effect. Changing the source-defined
   values also requires restarting with the updated mod (and rebuilding the ZIP
   if you installed it from a release archive).
-- The HUD is server-side and uses image elements; it does not attempt to
-  reproduce Minecraft's exact pixel layout or textures.
+- The HUD is server-side and uses image elements. Cell proportions follow
+  `mcl_offhand` (a 16 px item in a 20 px cell at scale 1.0), but Mineclonia's
+  textures are used instead of Minecraft's.
 - Very large icon scales or offsets can place the HUD off-screen. Values are
   clamped to sane ranges but the mod does not measure the player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
