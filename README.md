@@ -73,7 +73,7 @@ editable values in `src/settings.lua`, not by user settings.
 |---|---:|---|
 | `mcl_armor_hud_anchor` | `left` | Horizontal anchor: `left`, `center` or `right`. |
 | `mcl_armor_hud_offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
-| `mcl_armor_hud_offset_y` | `8` | Pixels above the bottom of the screen. |
+| `mcl_armor_hud_offset_y` | `2` | Pixels above the bottom of the screen (matches `mcl_offhand`). |
 | `mcl_armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 
 ### Editable values in the source
@@ -85,7 +85,7 @@ of `src/settings.lua` to change them:
 |---|---:|---|
 | `icon_scale` | `3.0` | Exact `mcl_offhand` size: 60x60 px cells with 48 px items. |
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
-| `offset_y` | `8` | Pixels above the bottom of the screen. |
+| `offset_y` | `2` | Pixels above the bottom of the screen, matching `mcl_offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
 | `critical_threshold` | `10` | Percentage at or below which the icon blinks. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
