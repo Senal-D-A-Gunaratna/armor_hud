@@ -3,7 +3,7 @@ local M = {}
 local VALUES = {
 	offset_x = 8,
 	offset_y = 8,
-	icon_scale = 2.4,
+	icon_scale = 2.5,
 	icon_spacing = 4,
 	critical_threshold = 10,
 	poll_interval = 0.5,
@@ -38,8 +38,7 @@ function M.load()
 		anchor = (core.settings:get("mcl_armor_hud_anchor") or "left"):lower(),
 
 		-- This is the time between two visibility flips, not the full cycle.
-		blink_interval = integer_setting("mcl_armor_hud_blink_interval",
-			DEFAULTS.blink_interval, 100, 10000),
+		blink_interval = integer_setting("mcl_armor_hud_blink_interval", DEFAULTS.blink_interval, 100, 10000),
 	}
 
 	for key, value in pairs(VALUES) do
@@ -47,8 +46,7 @@ function M.load()
 	end
 
 	if s.anchor ~= "left" and s.anchor ~= "center" and s.anchor ~= "right" then
-		core.log("warning",
-			"[mcl_armor_hud] Invalid mcl_armor_hud_anchor; using \"left\"")
+		core.log("warning", '[mcl_armor_hud] Invalid mcl_armor_hud_anchor; using "left"')
 		s.anchor = DEFAULTS.anchor
 	end
 
