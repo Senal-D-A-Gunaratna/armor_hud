@@ -2,7 +2,7 @@
 
 # Horizontal anchor for the armor HUD. The group of equipped armor pieces is
 # laid out from this edge, centred, or beside the mcl_offhand slot.
-# offhand: immediately right of the mcl_offhand slot (default)
+# offhand: fixed x beside the mcl_offhand slot; shifts left when it appears
 # left:    start at the left edge, growing right
 # center:  centre the group on the screen
 # right:   start at the right edge, growing left
