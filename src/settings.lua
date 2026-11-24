@@ -1,13 +1,17 @@
 local M = {}
 
-local DEFAULTS = {
-	anchor = "left",
+local VALUES = {
 	offset_x = 8,
 	offset_y = 8,
-	icon_scale = 1.0,
 	icon_spacing = 4,
 	warning_threshold = 25,
 	critical_threshold = 10,
+	poll_interval = 0.5,
+}
+
+local DEFAULTS = {
+	anchor = "left",
+	icon_scale = 1.0,
 	blink_interval = 500,
 }
 
@@ -34,28 +38,17 @@ function M.load()
 	local s = {
 		anchor = (core.settings:get("mcl_armor_hud_anchor") or "left"):lower(),
 
-		offset_x = integer_setting("mcl_armor_hud_offset_x",
-			DEFAULTS.offset_x, 0, 1024),
-		offset_y = integer_setting("mcl_armor_hud_offset_y",
-			DEFAULTS.offset_y, 0, 1024),
-
 		icon_scale = number_setting("mcl_armor_hud_icon_scale",
 			DEFAULTS.icon_scale, 0.25, 4.0),
-		icon_spacing = integer_setting("mcl_armor_hud_icon_spacing",
-			DEFAULTS.icon_spacing, 0, 64),
-
-		warning_threshold = integer_setting("mcl_armor_hud_warning_threshold",
-			DEFAULTS.warning_threshold, 0, 100),
-		critical_threshold = integer_setting("mcl_armor_hud_critical_threshold",
-			DEFAULTS.critical_threshold, 0, 100),
 
 		-- This is the time between two visibility flips, not the full cycle.
 		blink_interval = integer_setting("mcl_armor_hud_blink_interval",
 			DEFAULTS.blink_interval, 100, 10000),
-
-		-- Kept here so the update loop has a single source of configuration.
-		poll_interval = 0.5,
 	}
+
+	for key, value in pairs(VALUES) do
+		s[key] = value
+	end
 
 	if s.anchor ~= "left" and s.anchor ~= "center" and s.anchor ~= "right" then
 		core.log("warning",
