@@ -11,7 +11,7 @@ local VALUES = {
 local DEFAULTS = {
 	anchor = "left",
 	icon_scale = 1.0,
-	blink_interval = 500,
+	blink_interval = 200,
 }
 
 local function number_setting(name, default, min, max)
