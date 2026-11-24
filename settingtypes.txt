@@ -7,8 +7,9 @@
 # right:  start at the right edge, growing left
 mcl_armor_hud_anchor (Horizontal anchor) enum left left,center,right
 
-# Scale of the 16x16 armor item icons. 1.0 draws each icon at 16x16 pixels.
-mcl_armor_hud_icon_scale (Icon scale) float 1.0 0.25 4.0
+# Scale of the armor icons and durability bars. At 1.0 an item icon is
+# 16x16 pixels; the default 2.0 draws it at 32x32 pixels.
+mcl_armor_hud_icon_scale (Icon scale) float 2.0 0.25 4.0
 
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden

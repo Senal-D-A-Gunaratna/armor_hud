@@ -10,7 +10,7 @@ local VALUES = {
 
 local DEFAULTS = {
 	anchor = "left",
-	icon_scale = 1.0,
+	icon_scale = 2.0,
 	blink_interval = 200,
 }
 
