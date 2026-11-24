@@ -83,7 +83,7 @@ of `src/settings.lua` to change them:
 
 | Value | Default | Description |
 |---|---:|---|
-| `icon_scale` | `2.4` | Fixed size: 48x48 px cells with ~38 px items, 20% smaller than `mcl_offhand`. |
+| `icon_scale` | `2.5` | Fixed size: 50x50 px cells with 40 px items, scaled from `mcl_offhand`. |
 | `offset_x` | `8` | Pixels from the anchored edge. For `right`, positive values move left. |
 | `offset_y` | `8` | Pixels above the bottom of the screen. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
@@ -120,7 +120,9 @@ layout, threshold and polling values as editable source constants.
 
 `src/hud.lua` manages image HUD elements per armor slot. Each piece has four
 elements: the Mineclonia inventory-cell background, the full-size item image,
-a bar background and a bar fill below it, inside the cell. `src/player.lua`
+a bar background and a bar fill inside the cell, positioned like
+`mcl_offhand`: the bar is centered horizontally and overlays the lower part of
+the item instead of sitting below it. `src/player.lua`
 owns all per-player state and lifecycle handling:
 
 - join: create state and refresh;
@@ -151,8 +153,8 @@ Mineclonia release.
   values also requires restarting with the updated mod (and rebuilding the ZIP
   if you installed it from a release archive).
 - The HUD is server-side and uses image elements. It uses the same
-  `mcl_offhand` cell texture and proportions, scaled down 20% (48 px cell,
-  ~38 px item).
+  `mcl_offhand` cell texture and bar geometry, scaled from a 60 px cell with a
+  48 px item and a 40x3 bar to a 50 px cell with a 40 px item and a 33x3 bar.
 - Large offsets can place the HUD off-screen; the mod does not measure the
   player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
