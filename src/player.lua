@@ -93,7 +93,7 @@ local function layout(piece_count)
 		bar_height = bar_height,
 		cell_y = -settings.offset_y,
 		icon_y = -(settings.offset_y + inset),
-		bar_y = -(settings.offset_y + bar_center_from_cell_bottom +
+		bar_y = -(settings.offset_y + bar_center_from_cell_bottom -
 			bar_height / 2),
 	}
 end
