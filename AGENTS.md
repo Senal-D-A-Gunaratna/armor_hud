@@ -23,7 +23,7 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   when the code, settings, tests, dependencies or workflow change.
 - `init.lua`: checks `mcl_armor.elements`, loads `src/*.lua` with `dofile`, calls
   `player.start(settings, armor, hud)`.
-- `src/settings.lua`: three user settings + `VALUES` table (source-defined
+- `src/settings.lua`: two user settings + `VALUES` table (source-defined
   layout/poll values), validation and clamping.
 - `src/armor.lua`: reads inventory list `armor` in `head, torso, legs, feet`
   order using `mcl_armor.elements[slot].index` (2,3,4,5); resolves aliases,
@@ -87,16 +87,14 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 
 ## Configuration
 
-Three user settings (`settingtypes.txt`, read in `src/settings.lua`):
+Two user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
-| `armor_hud_anchor` | `left` | `left` only (always beside the offhand slot) |
 | `armor_hud_blink_interval` | `200` ms | 100–10000 |
 | `armor_hud_critical_threshold` | `10` % | 0–100 (0 disables blinking) |
 
-Invalid anchor falls back to `left`; non-numeric/clamped values use defaults
-and range bounds.
+Non-numeric/clamped values use defaults and range bounds.
 
 `icon_scale` is not a setting; it is fixed to `2.25` in `VALUES` so a 16 px
 item texture fills a 36 px item inside a 45 px cell — three quarters of the
@@ -115,7 +113,7 @@ quarters of the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
 `bar_center_from_cell_bottom = cell_px/2 - 19 * cell_px/60`,
 `bar_y = cell_y - (bar_center_from_cell_bottom - bar_height/2)`. The bar
 overlays the lower part of the item, as in `mcl_offhand`.
-The HUD is always anchored left: the group left edge is
+The HUD is fixed on the left: the group left edge is
 `LEFT_SLOT_X + LEFT_CELL_PX/2 + LEFT_SLOT_GAP` from screen center while the
 offhand HUD is hidden (currently `-516`), and shifts left by
 `LEFT_CELL_PX + LEFT_SLOT_GAP = 64` px when an offhand item is present.
@@ -129,11 +127,11 @@ Edit `README.md` if this table changes.
   `debug.getinfo`, stubs `core`/`mcl_armor`/`mcl_util`/`mcl_enchanting`, and
   checks HUD calls, texture/alias/enchant cases, durability polling, colors,
   blink with bar still visible, per-player isolation, diffing, lifecycle,
-  the single left anchor, the offhand-visibility shift and the configurable
+  the fixed left layout, the offhand-visibility shift and the configurable
   critical threshold. To test a different critical threshold at runtime, mutate
   the returned config table after `load_mod()` (e.g. `cfg.critical_threshold =
   25`), because `player.lua` holds the same table reference.
-- Test pitfalls: the only anchor is `left`, with the first cell at
+- Test pitfalls: the HUD is fixed on the left, with the first cell at
   x=-516 from screen center (or -580 while an offhand item is present) and cell
   bottom y=0 (cell center y=-22.5); the default cell is 45 px with a 36 px item and a 30x2 bar;
   cell texture is `mcl_offhand_slot.png^[resize:128x128`, item textures get the

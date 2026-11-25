@@ -65,13 +65,12 @@ The mod depends on `mcl_armor`, `mcl_util`, `mcl_enchanting` and
 
 ## Configuration
 
-Three settings are read from `minetest.conf` (or the in-game **Settings**
+Two settings are read from `minetest.conf` (or the in-game **Settings**
 menu) and are applied at server start. All other behaviour is controlled by
 editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
-| `armor_hud_anchor` | `left` | Always `left`: pieces sit beside the `mcl_offhand` slot. |
 | `armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 | `armor_hud_critical_threshold` | `10` | Durability percentage at or below which the icon blinks (`0` disables blinking). |
 
@@ -88,7 +87,6 @@ of `src/settings.lua` to change them:
 
 Validation rules:
 
-- Only the `left` anchor is supported; any other value falls back to `left`.
 - `blink_interval` and `critical_threshold` are clamped to the ranges declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
@@ -111,7 +109,7 @@ check: `remaining = (65536 - wear) * max_uses / 65536`. The bar color is
 computed from the same wear value with the exact gradient Luanti uses for item
 durability bars and Mineclonia uses for its offhand wear bar.
 
-`src/settings.lua` reads the three user settings and holds the remaining
+`src/settings.lua` reads the two user settings and holds the remaining
 layout and polling values as editable source constants.
 
 `src/hud.lua` manages image HUD elements per armor slot. It applies the same

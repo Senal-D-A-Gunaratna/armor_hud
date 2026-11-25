@@ -1,10 +1,5 @@
 [Armor HUD]
 
-# Horizontal anchor for the armor HUD. Armor pieces are always laid out on the
-# left, beside the mcl_offhand slot, and shift left when an offhand item makes
-# the offhand HUD appear.
-armor_hud_anchor (Horizontal anchor) enum left left
-
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden
 # every 200 ms (a full on/off cycle takes 400 ms). The durability bar stays
