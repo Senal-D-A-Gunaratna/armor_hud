@@ -264,7 +264,7 @@ local RESIZE = "^[resize:128x128"
 
 local function defaults()
 	return {
-		armor_hud_anchor = "offhand",
+		armor_hud_anchor = "left",
 		armor_hud_blink_interval = "200",
 		armor_hud_critical_threshold = "10",
 	}
@@ -287,15 +287,16 @@ settings_values.armor_hud_anchor = " side "
 settings_values.armor_hud_blink_interval = "zero"
 settings_values.armor_hud_critical_threshold = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
-assert_eq(s.anchor, "offhand", "invalid anchor fallback")
-assert_eq(load_mod().anchor, "offhand", "offhand is the default anchor")
+assert_eq(s.anchor, "left", "invalid anchor fallback")
+assert_eq(load_mod().anchor, "left", "left is the default anchor")
 assert_eq(s.icon_scale, 2.25, "source-defined icon scale")
 assert_eq(s.blink_interval, 200, "blink fallback")
 assert_eq(s.critical_threshold, 10, "critical threshold fallback")
-assert_eq(s.offset_x, 8, "source-defined horizontal offset")
-assert_eq(s.offset_y, 2, "source-defined vertical offset")
 assert_eq(s.icon_spacing, 4, "source-defined spacing")
 assert_eq(s.poll_interval, 0.5, "source-defined poll interval")
+settings_values.armor_hud_anchor = "right"
+s = dofile(MODPATH .. "/src/settings.lua").load()
+assert_eq(s.anchor, "left", "right anchor removed")
 settings_values.armor_hud_critical_threshold = "150"
 s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.critical_threshold, 100, "critical threshold clamped")
@@ -326,7 +327,7 @@ local ic = icons(p)[1]
 assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "icon texture")
 assert_true(near(ic.e.offset.x, -511.5), "item centered in cell")
 assert_true(near(ic.e.offset.y, -4.5), "item bottom inside cell")
-assert_eq(ic.e.position.x, 0.5, "offhand anchor position")
+assert_eq(ic.e.position.x, 0.5, "left anchor position")
 assert_true(near(ic.e.scale.x, 0.28125), "item scaled like mcl_offhand")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
@@ -337,7 +338,7 @@ assert_eq(b[2].e.scale.y, 2, "scaled offhand bar height")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
 
--- Offhand HUD visibility shifts the fixed offhand anchor left.
+-- Offhand HUD visibility shifts the fixed left anchor.
 core.registered_items["test:offhand"] = { inventory_image = "test_offhand.png" }
 p.inv:set_size("offhand", 1)
 p.inv:set_stack("offhand", 1, Stack.new("test:offhand"))
@@ -536,41 +537,6 @@ equip(d2, "head", "test:helmet_diamond", 0)
 advance(0.02)
 assert_eq(count_hud(d2), 4, "reconnected player updates")
 print("ok lifecycle")
-
--- Center and right anchoring.
-settings_values = defaults()
-settings_values.armor_hud_anchor = "center"
-local center_cfg = load_mod()
-center_cfg.offset_x = 10
-center_cfg.offset_y = 20
-local c = join("center")
-advance(0.02)
-equip(c, "head", "test:helmet_iron", 0)
-equip(c, "torso", "test:chest_iron", 0)
-advance(0.02)
-is = icons(c)
-assert_eq(is[1].e.position.x, 0.5, "center position")
-assert_true(near(is[1].e.offset.x, -32.5), "center first x")
-assert_true(near(is[2].e.offset.x, 16.5), "center second x")
-assert_true(near(is[1].e.offset.y, -24.5), "custom vertical offset")
-assert_true(near(bar_elements(c)[1].e.offset.y, -27.25), "custom bar vertical offset")
-print("ok center positioning")
-
-settings_values = defaults()
-settings_values.armor_hud_anchor = "right"
-local right_cfg = load_mod()
-right_cfg.offset_x = 10
-right_cfg.offset_y = 20
-local rr = join("right")
-advance(0.02)
-equip(rr, "head", "test:helmet_iron", 0)
-equip(rr, "torso", "test:chest_iron", 0)
-advance(0.02)
-is = icons(rr)
-assert_eq(is[1].e.position.x, 1, "right position")
-assert_true(near(is[1].e.offset.x, -99.5), "right first x")
-assert_true(near(is[2].e.offset.x, -50.5), "right second x")
-print("ok right positioning")
 
 -- Configurable critical threshold drives the blink state.
 settings_values = defaults()

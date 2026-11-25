@@ -10,16 +10,17 @@ local states = {}
 local poll_elapsed = 0
 
 -- Geometry used by mcl_offhand: 60 px cell, 48 px item, 40x3 bar. Its bar
--- center is 19 px below the cell center (slot offset -32, bar offset -13).
-local OFFHAND_CELL_PX = 60
-local OFFHAND_SLOT_X = -550
+-- center is 19 px below the cell center (slot offset -32, bar offset -13). The
+-- armor HUD mirrors that layout on the left, beside the offhand slot.
+local LEFT_CELL_PX = 60
+local LEFT_SLOT_X = -550
 local ARMOR_HUD_BOTTOM_GAP = 0
-local OFFHAND_SLOT_GAP = 4
-local OFFHAND_SHIFT_X = OFFHAND_CELL_PX + OFFHAND_SLOT_GAP
-local OFFHAND_TEXTURE_PX = 128
-local OFFHAND_BAR_W = 40
-local OFFHAND_BAR_H = 3
-local OFFHAND_BAR_CENTER_DY = 19
+local LEFT_SLOT_GAP = 4
+local LEFT_SHIFT_X = LEFT_CELL_PX + LEFT_SLOT_GAP
+local LEFT_TEXTURE_PX = 128
+local LEFT_BAR_W = 40
+local LEFT_BAR_H = 3
+local LEFT_BAR_CENTER_DY = 19
 
 -- Same green -> yellow -> red gradient as Mineclonia's inventory wear bars and
 -- its offhand HUD bar (Luanti's default durability bar colors).
@@ -63,46 +64,24 @@ local function has_offhand(player)
 	return name ~= "" and core.registered_items[name] ~= nil
 end
 
-local function layout(piece_count, offhand_visible)
-	local anchor = settings.anchor
+local function layout(offhand_visible)
 	local icon_px = 16 * settings.icon_scale
 	-- mcl_offhand draws a 48 px item in a 60 px cell; keep that proportion.
 	local cell_px = icon_px / 0.8
 	local inset = (cell_px - icon_px) / 2
 	local spacing = settings.icon_spacing
 
-	local group_width = 0
-	if piece_count > 0 then
-		group_width = piece_count * cell_px + (piece_count - 1) * spacing
+	local pos_x = 0.5
+	local start_x = LEFT_SLOT_X + LEFT_CELL_PX / 2 + LEFT_SLOT_GAP
+	if offhand_visible then
+		start_x = start_x - LEFT_SHIFT_X
 	end
+	local cell_y = -ARMOR_HUD_BOTTOM_GAP
 
-	local pos_x, start_x, cell_y
-	if anchor == "right" then
-		pos_x = 1
-		start_x = -group_width - settings.offset_x
-	elseif anchor == "center" then
-		pos_x = 0.5
-		start_x = -group_width / 2 + settings.offset_x
-	elseif anchor == "offhand" then
-		pos_x = 0.5
-		start_x = OFFHAND_SLOT_X + OFFHAND_CELL_PX / 2 + OFFHAND_SLOT_GAP
-		if offhand_visible then
-			start_x = start_x - OFFHAND_SHIFT_X
-		end
-		cell_y = -ARMOR_HUD_BOTTOM_GAP
-	else
-		pos_x = 0
-		start_x = settings.offset_x
-	end
-
-	if not cell_y then
-		cell_y = -settings.offset_y
-	end
-
-	local offhand_scale = cell_px / OFFHAND_CELL_PX
-	local bar_width = math.max(1, math.floor(OFFHAND_BAR_W * offhand_scale + 0.5))
-	local bar_height = math.max(1, math.floor(OFFHAND_BAR_H * offhand_scale + 0.5))
-	local bar_center_from_cell_bottom = cell_px / 2 - OFFHAND_BAR_CENTER_DY * offhand_scale
+	local left_scale = cell_px / LEFT_CELL_PX
+	local bar_width = math.max(1, math.floor(LEFT_BAR_W * left_scale + 0.5))
+	local bar_height = math.max(1, math.floor(LEFT_BAR_H * left_scale + 0.5))
+	local bar_center_from_cell_bottom = cell_px / 2 - LEFT_BAR_CENTER_DY * left_scale
 
 	return {
 		pos_x = pos_x,
@@ -110,7 +89,7 @@ local function layout(piece_count, offhand_visible)
 		step = cell_px + spacing,
 		cell_px = cell_px,
 		inset = inset,
-		icon_scale = icon_px / OFFHAND_TEXTURE_PX,
+		icon_scale = icon_px / LEFT_TEXTURE_PX,
 		bar_width = bar_width,
 		bar_height = bar_height,
 		cell_y = cell_y,
@@ -138,8 +117,7 @@ end
 local function refresh(player, state)
 	local now = core.get_gametime()
 	local pieces = armor.read(player)
-	local count = #pieces
-	local l = layout(count, has_offhand(player))
+	local l = layout(has_offhand(player))
 
 	local present = {}
 	for _, piece in ipairs(pieces) do

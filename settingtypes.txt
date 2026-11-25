@@ -1,12 +1,9 @@
 [Armor HUD]
 
-# Horizontal anchor for the armor HUD. The group of equipped armor pieces is
-# laid out from this edge, centred, or beside the mcl_offhand slot.
-# offhand: fixed x beside the mcl_offhand slot; shifts left when it appears
-# left:    start at the left edge, growing right
-# center:  centre the group on the screen
-# right:   start at the right edge, growing left
-armor_hud_anchor (Horizontal anchor) enum offhand offhand,left,center,right
+# Horizontal anchor for the armor HUD. Armor pieces are always laid out on the
+# left, beside the mcl_offhand slot, and shift left when an offhand item makes
+# the offhand HUD appear.
+armor_hud_anchor (Horizontal anchor) enum left left
 
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden

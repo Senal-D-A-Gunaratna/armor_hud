@@ -71,7 +71,7 @@ editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
-| `armor_hud_anchor` | `offhand` | Horizontal anchor: `offhand`, `left`, `center` or `right`. |
+| `armor_hud_anchor` | `left` | Always `left`: pieces sit beside the `mcl_offhand` slot. |
 | `armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 | `armor_hud_critical_threshold` | `10` | Durability percentage at or below which the icon blinks (`0` disables blinking). |
 
@@ -83,24 +83,19 @@ of `src/settings.lua` to change them:
 | Value | Default | Description |
 |---|---:|---|
 | `icon_scale` | `2.25` | 45x45 px cells with 36 px items: three quarters of the `mcl_offhand` size. |
-| `offset_x` | `8` | Pixels from the anchored edge; ignored by `offhand`. For `right`, positive values move left. |
-| `offset_y` | `2` | Pixels above the bottom of the screen; ignored by `offhand`. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
 
 Validation rules:
 
-- Unknown anchors fall back to `offhand`.
+- Only the `left` anchor is supported; any other value falls back to `left`.
 - `blink_interval` and `critical_threshold` are clamped to the ranges declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
-Only visible (equipped) pieces are laid out. The default `offhand` anchor uses
-a fixed x (currently `-516` from screen center, `64` px to the left when an
-offhand item makes the offhand HUD appear). Its bottom edge is flush with the
-screen bottom; edit `ARMOR_HUD_BOTTOM_GAP` in `src/player.lua` to add a gap.
-`left`, `center` and `right` remain available; for those anchors, positive
-horizontal offsets move the group right, except for `right`, where they move it
-left. `offset_x` and `offset_y` are ignored by the `offhand` anchor.
+Only visible (equipped) pieces are laid out. The HUD uses a fixed x (currently
+`-516` from screen center, `64` px to the left when an offhand item makes the
+offhand HUD appear). Its bottom edge is flush with the screen bottom; edit
+`ARMOR_HUD_BOTTOM_GAP` in `src/player.lua` to add a gap.
 
 ## How it works
 
@@ -159,8 +154,8 @@ Mineclonia release.
   exactly like `mcl_offhand`: both textures are resized to 128x128, then drawn
   with scales 0.46875 and 0.375, then renders them at three-quarters size
   (45 px cell, 36 px item, 30x2 bar).
-- Large offsets can place the HUD off-screen; the mod does not measure the
-  player's screen.
+- The fixed position can place the HUD off-screen on very small screens; the mod
+  does not measure the player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be
   in lockstep with a piece that was already critical.
 
