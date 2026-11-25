@@ -264,6 +264,7 @@ local RESIZE = "^[resize:128x128"
 
 local function defaults()
 	return {
+		armor_hud_icon_scale = "2.0",
 		armor_hud_blink_interval = "200",
 		armor_hud_critical_threshold = "10",
 	}
@@ -285,11 +286,14 @@ settings_values = defaults()
 settings_values.armor_hud_blink_interval = "zero"
 settings_values.armor_hud_critical_threshold = "zero"
 local s = dofile(MODPATH .. "/src/settings.lua").load()
-assert_eq(s.icon_scale, 2.25, "source-defined icon scale")
+assert_eq(s.icon_scale, 2.0, "icon scale is a setting")
 assert_eq(s.blink_interval, 200, "blink fallback")
 assert_eq(s.critical_threshold, 10, "critical threshold fallback")
 assert_eq(s.icon_spacing, 4, "source-defined spacing")
 assert_eq(s.poll_interval, 0.5, "source-defined poll interval")
+settings_values.armor_hud_icon_scale = "10"
+s = dofile(MODPATH .. "/src/settings.lua").load()
+assert_eq(s.icon_scale, 4.0, "icon scale clamped")
 settings_values.armor_hud_critical_threshold = "150"
 s = dofile(MODPATH .. "/src/settings.lua").load()
 assert_eq(s.critical_threshold, 100, "critical threshold clamped")
@@ -314,19 +318,19 @@ for _, e in pairs(p.hud) do if e.z_index == 9 then cell = e end end
 assert_eq(cell.text, "mcl_offhand_slot.png^[resize:128x128", "Mineclonia inventory cell texture")
 assert_true(near(cell.offset.x, -516), "cell beside offhand slot")
 assert_true(near(cell.offset.y, 0), "cell bottom flush with screen bottom")
-assert_true(near(cell.offset.y - 45 / 2, -22.5), "cell center for flush bottom")
-assert_true(near(cell.scale.x, 0.3515625), "cell scaled to three quarters of mcl_offhand")
+assert_true(near(cell.offset.y - 40 / 2, -20), "cell center for flush bottom")
+assert_true(near(cell.scale.x, 0.3125), "cell scaled to two thirds of mcl_offhand")
 local ic = icons(p)[1]
 assert_eq(ic.e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "icon texture")
-assert_true(near(ic.e.offset.x, -511.5), "item centered in cell")
-assert_true(near(ic.e.offset.y, -4.5), "item bottom inside cell")
+assert_true(near(ic.e.offset.x, -512), "item centered in cell")
+assert_true(near(ic.e.offset.y, -4), "item bottom inside cell")
 assert_eq(ic.e.position.x, 0.5, "fixed left position")
-assert_true(near(ic.e.scale.x, 0.28125), "item scaled like mcl_offhand")
+assert_true(near(ic.e.scale.x, 0.25), "item scaled to two thirds of mcl_offhand")
 local b = bar_elements(p)
 assert_eq(#b, 2, "bar elements")
-assert_true(near(b[1].e.offset.x, -508.5), "bar centered in cell")
-assert_true(near(b[1].e.offset.y, -7.25), "bar overlays lower item like offhand")
-assert_eq(b[2].e.scale.x, 30, "full bar fill")
+assert_true(near(b[1].e.offset.x, -509.5), "bar centered in cell")
+assert_true(near(b[1].e.offset.y, -6.3333), "bar overlays lower item like offhand")
+assert_eq(b[2].e.scale.x, 27, "full bar fill")
 assert_eq(b[2].e.scale.y, 2, "scaled offhand bar height")
 assert_eq(b[2].e.text, "mcl_wear_bar.png^[colorize:#0aff00", "Mineclonia green wear color")
 print("ok one piece")
@@ -354,10 +358,10 @@ advance(0.02)
 assert_eq(count_hud(p), 16, "four pieces have sixteen elements")
 local is = icons(p)
 assert_eq(#is, 4, "four icons")
-assert_true(near(is[1].e.offset.x, -511.5), "head x")
-assert_true(near(is[2].e.offset.x, -462.5), "torso x")
-assert_true(near(is[3].e.offset.x, -413.5), "legs x")
-assert_true(near(is[4].e.offset.x, -364.5), "feet x")
+assert_true(near(is[1].e.offset.x, -512), "head x")
+assert_true(near(is[2].e.offset.x, -468), "torso x")
+assert_true(near(is[3].e.offset.x, -424), "legs x")
+assert_true(near(is[4].e.offset.x, -380), "feet x")
 assert_eq(is[1].e.text, "mcl_armor_inv_helmet_iron.png^[resize:128x128", "head texture")
 assert_eq(is[4].e.text, "mcl_armor_inv_boots_iron.png^[resize:128x128", "feet texture")
 print("ok all four pieces")
@@ -369,7 +373,7 @@ advance(0.02)
 assert_eq(count_hud(p), 8, "two remaining pieces")
 is = icons(p)
 assert_eq(#is, 2, "two icons after removals")
-assert_true(near(is[1].e.offset.x, -511.5), "first remaining icon reflows")
+assert_true(near(is[1].e.offset.x, -512), "first remaining icon reflows")
 assert_eq(is[1].e.text, "mcl_armor_inv_leggings_iron.png^[resize:128x128", "legs is first")
 unequip(p, "legs")
 unequip(p, "feet")
@@ -397,17 +401,17 @@ equip(p, "torso", "test:chest_iron", 0)
 advance(0.02)
 local fill_id
 for id, e in pairs(p.hud) do if e.z_index == 12 then fill_id = id end end
-assert_eq(p.hud[fill_id].scale.x, 30, "full torso bar")
+assert_eq(p.hud[fill_id].scale.x, 27, "full torso bar")
 set_wear(p, "torso", 32768)
 advance(0.6)
-assert_eq(p.hud[fill_id].scale.x, 15, "half torso bar after polling")
+assert_eq(p.hud[fill_id].scale.x, 14, "half torso bar after polling")
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ffc900",
 	"Mineclonia yellow wear color at half durability")
 set_wear(p, "torso", math.floor(65536 * 0.75))
 advance(0.6)
 assert_eq(p.hud[fill_id].text, "mcl_wear_bar.png^[colorize:#ff3300",
 	"Mineclonia orange wear color")
-assert_eq(p.hud[fill_id].scale.x, 8, "quarter fill width")
+assert_eq(p.hud[fill_id].scale.x, 7, "quarter fill width")
 print("ok durability and wear-bar gradient")
 
 -- Critical blink.
@@ -420,11 +424,11 @@ assert_eq(icons(p)[1].e.text, "mcl_armor_inv_helmet_diamond.png^[resize:128x128"
 assert_eq(icons(p)[2].e.text, "", "critical icon hidden on blink")
 local visible_bars = 0
 for _, e in pairs(p.hud) do
-	if near(e.offset.x, -459.5) and e.z_index == 11 then
+	if near(e.offset.x, -465.5) and e.z_index == 11 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#1b1b1b",
 			"critical bar background stays visible")
 		visible_bars = visible_bars + 1
-	elseif near(e.offset.x, -459.5) and e.z_index == 12 then
+	elseif near(e.offset.x, -465.5) and e.z_index == 12 then
 		assert_eq(e.text, "mcl_wear_bar.png^[colorize:#ff0000",
 			"critical bar fill stays visible")
 		assert_eq(e.scale.x, 3, "critical bar fill keeps its width")
@@ -446,12 +450,12 @@ equip(q, "feet", "test:feet_iron", 0)
 advance(0.02)
 advance(0.21)
 for _, e in pairs(p.hud) do
-	if e.z_index == 10 and near(e.offset.x, -462.5) then
+	if e.z_index == 10 and near(e.offset.x, -468) then
 		assert_eq(e.text, "", "alice critical hidden")
 	end
 end
 for _, e in pairs(q.hud) do
-	if e.z_index == 10 and near(e.offset.x, -462.5) then
+	if e.z_index == 10 and near(e.offset.x, -468) then
 		assert_eq(e.text, "mcl_armor_inv_chestplate_iron.png^[resize:128x128", "bob unaffected")
 	end
 end

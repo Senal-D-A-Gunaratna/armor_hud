@@ -65,12 +65,13 @@ The mod depends on `mcl_armor`, `mcl_util`, `mcl_enchanting` and
 
 ## Configuration
 
-Two settings are read from `minetest.conf` (or the in-game **Settings**
+Three settings are read from `minetest.conf` (or the in-game **Settings**
 menu) and are applied at server start. All other behaviour is controlled by
 editable values in `src/settings.lua`, not by user settings.
 
 | Setting | Default | Description |
 |---|---:|---|
+| `armor_hud_icon_scale` | `2.0` | Scale of each icon and cell (`1.0`–`4.0`); `3.0` matches the `mcl_offhand` slot size. |
 | `armor_hud_blink_interval` | `200` | Milliseconds between icon visibility flips (a full cycle is twice this). |
 | `armor_hud_critical_threshold` | `10` | Durability percentage at or below which the icon blinks (`0` disables blinking). |
 
@@ -81,13 +82,12 @@ of `src/settings.lua` to change them:
 
 | Value | Default | Description |
 |---|---:|---|
-| `icon_scale` | `2.25` | 45x45 px cells with 36 px items: three quarters of the `mcl_offhand` size. |
 | `icon_spacing` | `4` | Pixels between adjacent icons. |
 | `poll_interval` | `0.5` | Seconds between durability polls. |
 
 Validation rules:
 
-- `blink_interval` and `critical_threshold` are clamped to the ranges declared in `settingtypes.txt`.
+- `icon_scale`, `blink_interval` and `critical_threshold` are clamped to the ranges declared in `settingtypes.txt`.
 - Non-numeric values fall back to the documented defaults.
 
 Only visible (equipped) pieces are laid out. The HUD uses a fixed x (currently
@@ -109,7 +109,7 @@ check: `remaining = (65536 - wear) * max_uses / 65536`. The bar color is
 computed from the same wear value with the exact gradient Luanti uses for item
 durability bars and Mineclonia uses for its offhand wear bar.
 
-`src/settings.lua` reads the two user settings and holds the remaining
+`src/settings.lua` reads the three user settings and holds the remaining
 layout and polling values as editable source constants.
 
 `src/hud.lua` manages image HUD elements per armor slot. It applies the same
@@ -148,10 +148,9 @@ Mineclonia release.
 - Settings require a server restart to take effect. Changing the source-defined
   values also requires restarting with the updated mod (and rebuilding the ZIP
   if you installed it from a release archive).
-- The HUD is server-side and uses image elements. It renders the cell and item
-  exactly like `mcl_offhand`: both textures are resized to 128x128, then drawn
-  with scales 0.46875 and 0.375, then renders them at three-quarters size
-  (45 px cell, 36 px item, 30x2 bar).
+- The HUD is server-side and uses image elements. It resizes the cell and item
+  textures to 128x128 like `mcl_offhand`; at the default scale it draws a 40 px
+  cell and 32 px item (HUD scales 0.3125 and 0.25) with a 27x2 bar.
 - The fixed position can place the HUD off-screen on very small screens; the mod
   does not measure the player's screen.
 - The blink phase restarts whenever a piece becomes critical, so it may not be

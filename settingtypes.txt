@@ -1,5 +1,9 @@
 [Armor HUD]
 
+# Scale of each armor icon and its cell. 2.0 draws a 32 px item inside a 40 px
+# cell; 3.0 matches the size of the mcl_offhand slot.
+armor_hud_icon_scale (Armor icon scale) float 2.0 1.0 4.0
+
 # Interval in milliseconds between visibility changes of the critical icon
 # blink. A value of 200 makes the icon switch between visible and hidden
 # every 200 ms (a full on/off cycle takes 400 ms). The durability bar stays

@@ -23,7 +23,7 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   when the code, settings, tests, dependencies or workflow change.
 - `init.lua`: checks `mcl_armor.elements`, loads `src/*.lua` with `dofile`, calls
   `player.start(settings, armor, hud)`.
-- `src/settings.lua`: two user settings + `VALUES` table (source-defined
+- `src/settings.lua`: three user settings + `VALUES` table (source-defined
   layout/poll values), validation and clamping.
 - `src/armor.lua`: reads inventory list `armor` in `head, torso, legs, feet`
   order using `mcl_armor.elements[slot].index` (2,3,4,5); resolves aliases,
@@ -61,7 +61,7 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
   with `inset` padding; the bar sits just below the item, horizontally centered
   in the cell, inside the cell. Cell and item textures are both resized to
   128x128 with `^[resize:128x128`; HUD scales are the `mcl_offhand` scales
-  multiplied by cell_px/60 (currently 0.3515625 and 0.28125). `type="image"`, `position={x=pos_x,y=1}`,
+  multiplied by cell_px/60 (currently 0.3125 and 0.25). `type="image"`, `position={x=pos_x,y=1}`,
   `alignment={x=1,y=-1}`. With y=-1 the element's bottom edge is at
   `position.y + offset.y`; with x=1 it starts at the left edge of the anchor.
   `scale=1` renders a 16x16 texture at native size. Bar color uses Mineclonia's
@@ -87,25 +87,27 @@ Dependencies (`mod.conf`): `mcl_armor`, `mcl_util`, `mcl_enchanting`,
 
 ## Configuration
 
-Two user settings (`settingtypes.txt`, read in `src/settings.lua`):
+Three user settings (`settingtypes.txt`, read in `src/settings.lua`):
 
 | Setting | Default | Range |
 |---|---:|---|
+| `armor_hud_icon_scale` | `2.0` | 1.0–4.0 (3.0 matches `mcl_offhand`) |
 | `armor_hud_blink_interval` | `200` ms | 100–10000 |
 | `armor_hud_critical_threshold` | `10` % | 0–100 (0 disables blinking) |
 
 Non-numeric/clamped values use defaults and range bounds.
 
-`icon_scale` is not a setting; it is fixed to `2.25` in `VALUES` so a 16 px
-item texture fills a 36 px item inside a 45 px cell — three quarters of the
-`mcl_offhand` size. HUD scales become 0.28125 (item) and 0.3515625 (cell)
-after the 128x128 resize.
+`icon_scale` is a user setting; at the `2.0` default a 16 px item texture fills
+a 32 px item inside a 40 px cell — two thirds of the `mcl_offhand` size. HUD
+scales are 0.25 (item) and 0.3125 (cell) after the 128x128 resize;
+`armor_hud_icon_scale=3.0` matches `mcl_offhand`.
 
 All other values live in the `VALUES` table at `src/settings.lua:3` and are
-**not** settings: `icon_scale=2.25`, `icon_spacing=4`, `poll_interval=0.5`.
+**not** settings: `icon_spacing=4`, `poll_interval=0.5`.
 Layout uses
-`icon_px = 16 * icon_scale` (36 px), `cell_px = icon_px / 0.8` (45 px, three
-quarters of the `mcl_offhand` cell size), `inset = (cell_px - icon_px)/2`,
+`icon_px = 16 * icon_scale` (32 px by default), `cell_px = icon_px / 0.8`
+(40 px by default, two thirds of the `mcl_offhand` cell size),
+`inset = (cell_px - icon_px)/2`,
 `step = cell_px + icon_spacing`, `bar_width = round(40 * cell_px/60)`,
 `bar_height = round(3 * cell_px/60)`, `bar_x = x + (cell_px - bar_width)/2`,
 `cell_y = -ARMOR_HUD_BOTTOM_GAP` (default 0, flush with the screen bottom),
@@ -133,10 +135,9 @@ Edit `README.md` if this table changes.
   25`), because `player.lua` holds the same table reference.
 - Test pitfalls: the HUD is fixed on the left, with the first cell at
   x=-516 from screen center (or -580 while an offhand item is present) and cell
-  bottom y=0 (cell center y=-22.5); the default cell is 45 px with a 36 px item and a 30x2 bar;
+  bottom y=0 (cell center y=-20); the default cell is 40 px with a 32 px item and a 27x2 bar;
   cell texture is `mcl_offhand_slot.png^[resize:128x128`, item textures get the
-  same suffix, HUD scales are 0.3515625/0.28125, and `icon_scale` is
-  source-defined (not a setting); a one-piece HUD has 4 elements; the cell uses z=9 and the
+  same suffix, HUD scales are 0.3125/0.25; a one-piece HUD has 4 elements; the cell uses z=9 and the
   item/bar use z=10/11/12. Wear `59000` for critical (the rounded 10% boundary is
   `math.floor(65536*0.9)=58982`, which is still above the 10% threshold);
   advance `0.21` s per blink flip to avoid float boundary at exactly `0.2`.
